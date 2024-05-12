@@ -6,6 +6,10 @@ pygame.init()
 
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
+ENERGY_BAR_WIDTH = 200
+ENERGY_BAR_HEIGHT = 20
+ENERGY_BAR_COLOR = (0, 255, 0)  # Green color for energy bar
+ENERGY_DECREASE_RATE = 0.5  # Energy decrease rate per second
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Carregando imagens
@@ -53,8 +57,20 @@ class Dinosaur:
         self.dino_rect = self.image.get_rect()
         self.dino_rect.x = 80
         self.dino_rect.y = 310
+        self.last_energy_update_time = pygame.time.get_ticks()  # Last time energy was updated
 
     def update(self, userInput):
+        current_time = pygame.time.get_ticks()
+        time_elapsed = (current_time - self.last_energy_update_time) / 1000  # Convert milliseconds to seconds
+        
+        # Decrease energy over time
+        self.energy -= ENERGY_DECREASE_RATE * time_elapsed
+        if self.energy < 0:
+            self.energy = 0
+
+        # Update last energy update time
+        self.last_energy_update_time = current_time
+        
         if self.dino_duck:
             self.duck()
         if self.dino_run:
@@ -110,6 +126,8 @@ class Dinosaur:
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
+        # Draw energy bar
+        pygame.draw.rect(SCREEN, ENERGY_BAR_COLOR, (10, 10, self.energy * 2, ENERGY_BAR_HEIGHT))
 
 class PowerSupply:
     def __init__(self, x, y):
@@ -120,6 +138,8 @@ class PowerSupply:
 
     def effect(self, player):
         player.energy += 20
+        if player.energy > 100:  # Limit energy to 100
+            player.energy = 100
 
 class GraphicsCard:
     def __init__(self, x, y):
