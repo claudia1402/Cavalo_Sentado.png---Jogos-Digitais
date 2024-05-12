@@ -9,14 +9,14 @@ SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 
-RUNNING = [pygame.image.load(os.path.join("Assets/Dino","DinoRun1.png")),
-           pygame.image.load(os.path.join("Assets/Dino","DinoRun2.png"))]
+RUNNING = [pygame.image.load(os.path.join("Assets/Boy","BoyWalking1.png")),
+           pygame.image.load(os.path.join("Assets/Boy","BoyWalking2.png"))]
 
 
-JUMPING = pygame.image.load(os.path.join("Assets/Dino","DinoJump.png"))
+JUMPING = pygame.image.load(os.path.join("Assets/Boy","BoyJump.png"))
 
-DUCKING = [pygame.image.load(os.path.join("Assets/Dino","DinoDuck1.png")),
-           pygame.image.load(os.path.join("Assets/Dino","DinoDuck2.png"))]
+DUCKING = [pygame.image.load(os.path.join("Assets/Boy","BoyDuck1.png")),
+           pygame.image.load(os.path.join("Assets/Boy","BoyDuck2.png"))]
 
 OBSTACLE_ONE_SMALL = [pygame.image.load(os.path.join("Assets/Cactus","SmallCactus1.png")),
            pygame.image.load(os.path.join("Assets/Cactus","SmallCactus2.png")),
@@ -249,7 +249,7 @@ def main():
 
         score()
 
-        clock.tick(30)
+        clock.tick(40)
         pygame.display.update()
 
         
