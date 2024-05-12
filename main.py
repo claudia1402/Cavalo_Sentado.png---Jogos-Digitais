@@ -4,7 +4,6 @@ import random
 
 pygame.init()
 
-#variaveis globais
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -33,29 +32,27 @@ CLOUD = pygame.image.load(os.path.join("Assets/Other","Cloud.png"))
 
 BG = pygame.image.load(os.path.join("Assets/Other","Track.png"))
 
-#classes
+POWER_SUPPLY = pygame.image.load(os.path.join("Assets/PC_Hardware", "PowerSupply.png"))
+GRAPHICS_CARD = pygame.image.load(os.path.join("Assets/PC_Hardware", "GraphicsCard.png"))
+SSD = pygame.image.load(os.path.join("Assets/PC_Hardware", "SSD.png"))
 
 class Dinosaur:
-    X_POS = 80
-    Y_POS = 310
-    Y_POS_DUCK = 340
-    JUMP_VEL = 8.5
-
     def __init__(self):
-       self.duck_img = DUCKING
-       self.run_img = RUNNING
-       self.jump_img = JUMPING
-
-       self.dino_duck = False
-       self.dino_run = True
-       self.dino_jump = False
-
-       self.step_index = 0
-       self.jump_vel = self.JUMP_VEL
-       self.image = self.run_img[0]
-       self.dino_rect = self.image.get_rect()
-       self.dino_rect.x = self.X_POS
-       self.dino_rect.y = self.Y_POS
+        self.energy = 100
+        self.visibility_boost = False
+        self.speed_boost = False
+        self.duck_img = DUCKING
+        self.run_img = RUNNING
+        self.jump_img = JUMPING
+        self.dino_duck = False
+        self.dino_run = True
+        self.dino_jump = False
+        self.step_index = 0
+        self.jump_vel = 8.5
+        self.image = self.run_img[0]
+        self.dino_rect = self.image.get_rect()
+        self.dino_rect.x = 80
+        self.dino_rect.y = 310
 
     def update(self, userInput):
         if self.dino_duck:
@@ -65,39 +62,41 @@ class Dinosaur:
         if self.dino_jump:
             self.jump()
 
-
         if self.step_index >= 10:
             self.step_index = 0
 
+        for item in powerups:
+            if self.dino_rect.colliderect(item.rect):
+                item.effect(self)
+                powerups.remove(item)
 
         if userInput[pygame.K_UP] and not self.dino_jump:
             self.dino_duck = False
             self.dino_run = False
             self.dino_jump = True
-            
+
         elif userInput[pygame.K_DOWN] and not self.dino_jump:
             self.dino_duck = True
             self.dino_run = False
             self.dino_jump = False
-            
+
         elif not (self.dino_jump or userInput[pygame.K_DOWN]):
             self.dino_duck = False
             self.dino_run = True
             self.dino_jump = False
 
-            
     def duck(self):
         self.image = self.duck_img[self.step_index // 5]
         self.dino_rect = self.image.get_rect()
-        self.dino_rect.x = self.X_POS
-        self.dino_rect.y = self.Y_POS_DUCK
+        self.dino_rect.x = 80
+        self.dino_rect.y = 340
         self.step_index += 1
 
     def run(self):
         self.image = self.run_img[self.step_index // 5]
         self.dino_rect = self.image.get_rect()
-        self.dino_rect.x = self.X_POS
-        self.dino_rect.y = self.Y_POS
+        self.dino_rect.x = 80
+        self.dino_rect.y = 310
         self.step_index += 1
 
     def jump(self):
@@ -105,114 +104,62 @@ class Dinosaur:
         if self.dino_jump:
             self.dino_rect.y -= self.jump_vel * 4
             self.jump_vel -= 0.8
-        if self.jump_vel < - self.JUMP_VEL:
+        if self.jump_vel < -8.5:
             self.dino_jump = False
-            self.jump_vel = self.JUMP_VEL
-
+            self.jump_vel = 8.5
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
 
-class Cloud:
-    def __init__(self):
-        self.x = SCREEN_WIDTH + random.randint(800,1000)
-        self.y = random.randint(50,100)
-        self.image = CLOUD
-        self.width = self.image.get_width()
+class PowerSupply:
+    def __init__(self, x, y):
+        self.image = POWER_SUPPLY
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
-    def update(self):
-        self.x -= game_speed
-        if self.x < -self.width:
-            self.x = SCREEN_WIDTH + random.randint(2500,3000)
-            self.y = random.randint(50,100)
+    def effect(self, player):
+        player.energy += 20
 
-    def draw(self, SCREEN):
-        SCREEN.blit(self.image, (self.x, self.y))
+class GraphicsCard:
+    def __init__(self, x, y):
+        self.image = GRAPHICS_CARD
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
-class Obstacle:
-    def __init__(self,image,type):
-        self.image = image
-        self.type = type
-        self.rect = self.image[self.type].get_rect()
-        self.rect.x = SCREEN_WIDTH
-        
+    def effect(self, player):
+        player.visibility_boost = True
 
-    def update(self):
-       self.rect.x -= game_speed
-       if self.rect.x < -self.rect.width:
-           obstacles.pop()
+class SSD(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.image.load(os.path.join("Assets/PC_Hardware","SSD.png"))  # SSD_IMAGE deve ser substituído pela sua imagem do SSD
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
-       
-    def draw(self, SCREEN):
-        SCREEN.blit(self.image[self.type], self.rect)
+    def effect(self, player):
+        player.speed_boost = True
 
-class SmallCactus(Obstacle):
-     def __init__(self,image):
-        self.type = random.randint(0,2)
-        super().__init__(image, self.type)
-        self.rect.y = 325
+def add_powerup():
+    if random.randint(0, 100) < 5:
+        powerup_type = random.choice(["power_supply", "graphics_card", "ssd"])
+        if powerup_type == "power_supply":
+            powerups.append(PowerSupply(SCREEN_WIDTH, 310))
+        elif powerup_type == "graphics_card":
+            powerups.append(GraphicsCard(SCREEN_WIDTH, 310))
+        elif powerup_type == "ssd":
+            powerups.append(SSD(SCREEN_WIDTH, 310))
 
-
-class LargeCactus(Obstacle):
-    def __init__(self,image):
-        self.type = random.randint(0,2)
-        super().__init__(image, self.type)
-        self.rect.y = 300
-
-class Bird(Obstacle):
-    def __init__(self,image):
-        self.type = 0
-        super().__init__(image, self.type)
-        self.rect.y = 250
-        self.index = 0
-
-    def draw(self, SCREEN):
-        if self.index >= 9:
-            self.index = 0
-        SCREEN.blit(self.image[self.index // 5], self.rect)
-        self.index += 1
-
-
-#main
+powerups = []
 
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, points, obstacles
     run = True
     clock = pygame.time.Clock()
     player = Dinosaur()
-    cloud = Cloud()
     game_speed = 14
     x_pos_bg = 0
-    y_pos_bg = 380
-    points = 0
-    font = pygame.font.Font("freesansbold.ttf", 20)
-    obstacles = []
-    death_count = 0
-
-    #contador de pontuacao + aumento da velocidade
-    def score():
-        global points, game_speed
-        points += 1
-        if points % 100 == 0:
-            game_speed += 1
-
-        text = font.render("Pontos: " + str(points), True, (0,0,0))
-        textRect = text.get_rect()
-        textRect.center = (1000, 40)
-        SCREEN.blit(text, textRect)
-
-    #criacao de paralax com background
-    def background():
-        global x_pos_bg, y_pos_bg
-        image_width = BG.get_width()
-        SCREEN.blit(BG, (x_pos_bg, y_pos_bg))
-        SCREEN.blit(BG, (image_width + x_pos_bg, y_pos_bg))
-        if x_pos_bg <= -image_width:
-            SCREEN.blit(BG,  (image_width + x_pos_bg, y_pos_bg))
-            x_pos_bg = 0
-        x_pos_bg -= game_speed
-            
-        
 
     while run:
         for event in pygame.event.get():
@@ -225,67 +172,21 @@ def main():
         player.draw(SCREEN)
         player.update(userInput)
 
-        if len(obstacles) == 0:
-            if random.randint(0,2) == 0:
-                obstacles.append(SmallCactus(OBSTACLE_ONE_SMALL))
-            elif random.randint(0,2) == 1:
-                obstacles.append(LargeCactus(OBSTACLE_ONE_LARGE))
-            elif random.randint(0,2) == 2:
-                obstacles.append(Bird(OBSTACLE_TWO))
+        add_powerup()
 
-        for obstacle in obstacles:
-            obstacle.draw(SCREEN)
-            obstacle.update()
-            if player.dino_rect.colliderect(obstacle.rect):
-                pygame.time.delay(1500)
-                death_count += 1
-                menu(death_count)
-                
+        for item in powerups:
+            item.rect.x -= game_speed
+            SCREEN.blit(item.image, item.rect)
+            if item.rect.x < -item.rect.width:
+                powerups.remove(item)
 
-        background()
+        x_pos_bg -= game_speed
+        SCREEN.blit(BG, (x_pos_bg, 380))
+        SCREEN.blit(BG, (BG.get_width() + x_pos_bg, 380))
+        if x_pos_bg <= -BG.get_width():
+            x_pos_bg = 0
 
-        cloud.draw(SCREEN)
-        cloud.update()
-
-        score()
-
-        clock.tick(40)
         pygame.display.update()
+        clock.tick(30)
 
-        
-
-
-
-def menu(death_count):
-    global points
-    run = True
-    while run:
-        SCREEN.fill((255,255,255))
-        font = pygame.font.Font("freesansbold.ttf", 30)
-
-        if death_count == 0:
-            text = font.render("Pressione qualquer tecla para começar!", True, (0,0,0))
-
-        elif death_count > 0:
-            text = font.render("Pressione qualquer tecla para recomeçar!", True, (0,0,0))
-            score = font.render("Sua pontuação: " + str(points), True, (0,0,0))
-            scoreRect = score.get_rect()
-            scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
-            SCREEN.blit(score, scoreRect)
-        textRect = text.get_rect()
-        textRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-        SCREEN.blit(text, textRect)
-        SCREEN.blit(RUNNING[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 140))
-        pygame.display.update()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-            if event.type == pygame.KEYDOWN:
-                main()
-
-menu(death_count = 0)
-
-            
-    
-    
+main()
