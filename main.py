@@ -249,7 +249,7 @@ def main():
 
         score()
 
-        clock.tick(30)
+        clock.tick(40)
         pygame.display.update()
 
         
