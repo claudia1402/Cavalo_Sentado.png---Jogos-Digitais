@@ -6,35 +6,35 @@ pygame.init()
 
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
-SCREEN = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-RUNNING = [pygame.image.load(os.path.join("Assets/Boy","BoyWalking1.png")),
-           pygame.image.load(os.path.join("Assets/Boy","BoyWalking2.png"))]
+# Carregando imagens
+RUNNING = [pygame.image.load(os.path.join("Assets/Boy", "BoyWalking1.png")),
+           pygame.image.load(os.path.join("Assets/Boy", "BoyWalking2.png"))]
 
+JUMPING = pygame.image.load(os.path.join("Assets/Boy", "BoyJump.png"))
 
-JUMPING = pygame.image.load(os.path.join("Assets/Boy","BoyJump.png"))
+DUCKING = [pygame.image.load(os.path.join("Assets/Boy", "BoyDuck1.png")),
+           pygame.image.load(os.path.join("Assets/Boy", "BoyDuck2.png"))]
 
-DUCKING = [pygame.image.load(os.path.join("Assets/Boy","BoyDuck1.png")),
-           pygame.image.load(os.path.join("Assets/Boy","BoyDuck2.png"))]
+OBSTACLE_ONE_SMALL = [pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus1.png")),
+                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus2.png")),
+                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus3.png"))]
 
-OBSTACLE_ONE_SMALL = [pygame.image.load(os.path.join("Assets/Cactus","SmallCactus1.png")),
-           pygame.image.load(os.path.join("Assets/Cactus","SmallCactus2.png")),
-                pygame.image.load(os.path.join("Assets/Cactus","SmallCactus3.png"))]
+OBSTACLE_ONE_LARGE = [pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus1.png")),
+                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus2.png")),
+                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus3.png"))]
 
-OBSTACLE_ONE_LARGE = [pygame.image.load(os.path.join("Assets/Cactus","LargeCactus1.png")),
-           pygame.image.load(os.path.join("Assets/Cactus","LargeCactus2.png")),
-                pygame.image.load(os.path.join("Assets/Cactus","LargeCactus3.png"))]
+OBSTACLE_TWO = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
+                pygame.image.load(os.path.join("Assets/Bird", "Bird2.png"))]
 
-OBSTACLE_TWO = [pygame.image.load(os.path.join("Assets/Bird","Bird1.png")),
-           pygame.image.load(os.path.join("Assets/Bird","Bird2.png"))]
+CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 
-CLOUD = pygame.image.load(os.path.join("Assets/Other","Cloud.png"))
-
-BG = pygame.image.load(os.path.join("Assets/Other","Track.png"))
+BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
 
 POWER_SUPPLY = pygame.image.load(os.path.join("Assets/PC_Hardware", "PowerSupply.png"))
 GRAPHICS_CARD = pygame.image.load(os.path.join("Assets/PC_Hardware", "GraphicsCard.png"))
-SSD = pygame.image.load(os.path.join("Assets/PC_Hardware", "SSD.png"))
+SSD_IMAGE = pygame.image.load(os.path.join("Assets/PC_Hardware", "SSD.png"))
 
 class Dinosaur:
     def __init__(self):
@@ -134,7 +134,7 @@ class GraphicsCard:
 class SSD(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        self.image = pygame.image.load(os.path.join("Assets/PC_Hardware","SSD.png"))  # SSD_IMAGE deve ser substituído pela sua imagem do SSD
+        self.image = SSD_IMAGE
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -143,14 +143,21 @@ class SSD(pygame.sprite.Sprite):
         player.speed_boost = True
 
 def add_powerup():
-    if random.randint(0, 100) < 5:
+    min_distance_between_powerups = 400  # Aumentando a distância mínima entre coletáveis
+    if random.randint(0, 100) < 2:  # Reduzindo a probabilidade de criação de coletáveis
         powerup_type = random.choice(["power_supply", "graphics_card", "ssd"])
+        new_powerup_x = SCREEN_WIDTH
+        new_powerup_y = 310
+        if len(powerups) > 0:
+            last_powerup = powerups[-1]
+            new_powerup_x = max(SCREEN_WIDTH, last_powerup.rect.x + min_distance_between_powerups)
         if powerup_type == "power_supply":
-            powerups.append(PowerSupply(SCREEN_WIDTH, 310))
+            powerups.append(PowerSupply(new_powerup_x, new_powerup_y))
         elif powerup_type == "graphics_card":
-            powerups.append(GraphicsCard(SCREEN_WIDTH, 310))
+            powerups.append(GraphicsCard(new_powerup_x, new_powerup_y))
         elif powerup_type == "ssd":
-            powerups.append(SSD(SCREEN_WIDTH, 310))
+            powerups.append(SSD(new_powerup_x, new_powerup_y))
+
 
 powerups = []
 
@@ -166,7 +173,7 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
 
-        SCREEN.fill((255,255,255))
+        SCREEN.fill((255, 255, 255))
         userInput = pygame.key.get_pressed()
 
         player.draw(SCREEN)
