@@ -9,7 +9,7 @@ SCREEN_WIDTH = 1100
 ENERGY_BAR_WIDTH = 200
 ENERGY_BAR_HEIGHT = 20
 ENERGY_BAR_COLOR = (0, 255, 0)  # Green color for energy bar
-ENERGY_DECREASE_RATE = 0.5  # Energy decrease rate per second
+ENERGY_DECREASE_RATE = 5.0  # Energy decrease rate per second
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Carregando imagens
