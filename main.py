@@ -157,16 +157,107 @@ def add_powerup():
             powerups.append(GraphicsCard(new_powerup_x, new_powerup_y))
         elif powerup_type == "ssd":
             powerups.append(SSD(new_powerup_x, new_powerup_y))
-
-
+            
 powerups = []
 
+class Cloud:
+    def __init__(self):
+        self.x = SCREEN_WIDTH + random.randint(800,1000)
+        self.y = random.randint(50,100)
+        self.image = CLOUD
+        self.width = self.image.get_width()
+
+    def update(self):
+        self.x -= game_speed
+        if self.x < -self.width:
+            self.x = SCREEN_WIDTH + random.randint(2500,3000)
+            self.y = random.randint(50,100)
+
+    def draw(self, SCREEN):
+        SCREEN.blit(self.image, (self.x, self.y))
+
+class Obstacle:
+    def __init__(self,image,type):
+        self.image = image
+        self.type = type
+        self.rect = self.image[self.type].get_rect()
+        self.rect.x = SCREEN_WIDTH
+        
+
+    def update(self):
+       self.rect.x -= game_speed
+       if self.rect.x < -self.rect.width:
+           obstacles.pop()
+
+       
+    def draw(self, SCREEN):
+        SCREEN.blit(self.image[self.type], self.rect)
+
+class SmallCactus(Obstacle):
+     def __init__(self,image):
+        self.type = random.randint(0,2)
+        super().__init__(image, self.type)
+        self.rect.y = 325
+
+
+class LargeCactus(Obstacle):
+    def __init__(self,image):
+        self.type = random.randint(0,2)
+        super().__init__(image, self.type)
+        self.rect.y = 300
+
+class Bird(Obstacle):
+    def __init__(self,image):
+        self.type = 0
+        super().__init__(image, self.type)
+        self.rect.y = 250
+        self.index = 0
+
+    def draw(self, SCREEN):
+        if self.index >= 9:
+            self.index = 0
+        SCREEN.blit(self.image[self.index // 5], self.rect)
+        self.index += 1
+
+
+#main
+
 def main():
+    global game_speed, x_pos_bg, y_pos_bg, points, obstacles
     run = True
     clock = pygame.time.Clock()
     player = Dinosaur()
+    cloud = Cloud()
     game_speed = 14
     x_pos_bg = 0
+    y_pos_bg = 380
+    points = 0
+    font = pygame.font.Font("freesansbold.ttf", 20)
+    obstacles = []
+    death_count = 0
+    
+        #contador de pontuacao + aumento da velocidade
+    def score():
+        global points, game_speed
+        points += 1
+        if points % 100 == 0:
+            game_speed += 1
+
+        text = font.render("Pontos: " + str(points), True, (0,0,0))
+        textRect = text.get_rect()
+        textRect.center = (1000, 40)
+        SCREEN.blit(text, textRect)
+
+    #criacao de paralax com background
+    def background():
+        global x_pos_bg, y_pos_bg
+        image_width = BG.get_width()
+        SCREEN.blit(BG, (x_pos_bg, y_pos_bg))
+        SCREEN.blit(BG, (image_width + x_pos_bg, y_pos_bg))
+        if x_pos_bg <= -image_width:
+            SCREEN.blit(BG,  (image_width + x_pos_bg, y_pos_bg))
+            x_pos_bg = 0
+        x_pos_bg -= game_speed
 
     while run:
         for event in pygame.event.get():
@@ -180,6 +271,22 @@ def main():
         player.update(userInput)
 
         add_powerup()
+        
+        if len(obstacles) == 0:
+            if random.randint(0,2) == 0:
+                obstacles.append(SmallCactus(OBSTACLE_ONE_SMALL))
+            elif random.randint(0,2) == 1:
+                obstacles.append(LargeCactus(OBSTACLE_ONE_LARGE))
+            elif random.randint(0,2) == 2:
+                obstacles.append(Bird(OBSTACLE_TWO))
+                
+        for obstacle in obstacles:
+            obstacle.draw(SCREEN)
+            obstacle.update()
+            if player.dino_rect.colliderect(obstacle.rect):
+                pygame.time.delay(1500)
+                death_count += 1
+                menu(death_count)
 
         for item in powerups:
             item.rect.x -= game_speed
@@ -187,13 +294,45 @@ def main():
             if item.rect.x < -item.rect.width:
                 powerups.remove(item)
 
-        x_pos_bg -= game_speed
-        SCREEN.blit(BG, (x_pos_bg, 380))
-        SCREEN.blit(BG, (BG.get_width() + x_pos_bg, 380))
-        if x_pos_bg <= -BG.get_width():
-            x_pos_bg = 0
+        background()
+
+        cloud.draw(SCREEN)
+        cloud.update()
+
+        score()
+
 
         pygame.display.update()
         clock.tick(30)
 
 main()
+
+def menu(death_count):
+    global points
+    run = True
+    while run:
+        SCREEN.fill((255,255,255))
+        font = pygame.font.Font("freesansbold.ttf", 30)
+
+        if death_count == 0:
+            text = font.render("Pressione qualquer tecla para começar!", True, (0,0,0))
+
+        elif death_count > 0:
+            text = font.render("Pressione qualquer tecla para recomeçar!", True, (0,0,0))
+            score = font.render("Sua pontuação: " + str(points), True, (0,0,0))
+            scoreRect = score.get_rect()
+            scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
+            SCREEN.blit(score, scoreRect)
+        textRect = text.get_rect()
+        textRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        SCREEN.blit(text, textRect)
+        SCREEN.blit(RUNNING[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 140))
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == pygame.KEYDOWN:
+                main()
+
+menu(death_count = 0)
