@@ -9,8 +9,11 @@ SCREEN_WIDTH = 1100
 ENERGY_BAR_WIDTH = 200
 ENERGY_BAR_HEIGHT = 20
 ENERGY_BAR_COLOR = (0, 255, 0)  # Green color for energy bar
-ENERGY_DECREASE_RATE = 10.0  # Increased energy decrease rate per second
+ENERGY_DECREASE_RATE = 5.0  # Increased energy decrease rate per second
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pink_border_active = False
+pink_border_timer = 0  # Timer for 10 seconds
+PINK_BORDER_COLOR = (255, 105, 180)  # Pink color for the border
 
 # Carregando imagens
 RUNNING = [pygame.image.load(os.path.join("Assets/Boy", "BoyWalking1.png")),
@@ -149,7 +152,10 @@ class GraphicsCard:
         self.rect.y = y
 
     def effect(self, player):
+        global pink_border_active, pink_border_timer
         player.visibility_boost = True
+        pink_border_active = True  # Activate pink border effect
+        pink_border_timer = pygame.time.get_ticks()  # Start the timer
 
 class SSD(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -175,6 +181,10 @@ def add_powerup():
             powerups.append(PowerSupply(new_powerup_x, new_powerup_y))
         elif powerup_type == "graphics_card":
             powerups.append(GraphicsCard(new_powerup_x, new_powerup_y))
+            if powerup_type == "graphics_card":
+                powerups.append(GraphicsCard(new_powerup_x, new_powerup_y))
+                pink_border_active = True  # Activate pink border effect
+                pink_border_timer = pygame.time.get_ticks()  # Start the timer
         elif powerup_type == "ssd":
             powerups.append(SSD(new_powerup_x, new_powerup_y))
             
@@ -270,7 +280,7 @@ def menu(death_count, points):
 
 #main
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, points, obstacles
+    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, pink_border_active, pink_border_timer
     run = True
     clock = pygame.time.Clock()
     player = Dinosaur()
@@ -345,6 +355,9 @@ def main():
             SCREEN.blit(item.image, item.rect)
             if item.rect.x < -item.rect.width:
                 powerups.remove(item)
+            if pink_border_active:
+                pygame.draw.rect(SCREEN, PINK_BORDER_COLOR, item.rect, 3)  # Draw pink border
+            SCREEN.blit(item.image, item.rect)
 
         background()
 
@@ -356,7 +369,11 @@ def main():
         if check_energy():
             menu(death_count, points)  # Pass points to the menu
             run = False  # End the game and return to menu
-
+            
+        current_time = pygame.time.get_ticks()
+        if pink_border_active and current_time - pink_border_timer > 10000:  # Check if 10 seconds have passed
+            pink_border_active = False  # Deactivate pink border effect
+        
         pygame.display.update()
         clock.tick(30)
 
