@@ -377,6 +377,6 @@ def main():
             pink_border_active = False  # Deactivate pink border effect
         
         pygame.display.update()
-        clock.tick(30)
+        clock.tick(40)
 
 main()
