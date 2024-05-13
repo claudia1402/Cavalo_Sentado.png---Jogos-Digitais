@@ -239,8 +239,7 @@ class Bird(Obstacle):
         SCREEN.blit(self.image[self.index // 5], self.rect)
         self.index += 1
 
-def menu(death_count):
-    global points
+def menu(death_count, points):
     run = True
     while run:
         SCREEN.fill((255,255,255))
@@ -251,7 +250,7 @@ def menu(death_count):
 
         elif death_count > 0:
             text = font.render("Pressione qualquer tecla para recomeçar!", True, (0,0,0))
-            score = font.render("Sua pontuação: " + str(points), True, (0,0,0))
+            score = font.render("Pontuação: " + str(points), True, (0,0,0))  # Display score points
             scoreRect = score.get_rect()
             scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
             SCREEN.blit(score, scoreRect)
@@ -266,7 +265,6 @@ def menu(death_count):
                 run = False
             if event.type == pygame.KEYDOWN:
                 main()
-
 #main
 def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles
@@ -335,7 +333,7 @@ def main():
             if player.dino_rect.colliderect(obstacle.rect):
                 pygame.time.delay(1500)
                 death_count += 1
-                menu(death_count)
+                menu(death_count, points)  # Pass points to the menu
 
         for item in powerups:
             item.rect.x -= game_speed
@@ -351,7 +349,7 @@ def main():
         score()
 
         if check_energy():
-            menu(death_count)
+            menu(death_count, points)  # Pass points to the menu
             run = False  # End the game and return to menu
 
         pygame.display.update()
@@ -361,6 +359,5 @@ def main():
     quit()
 
 main()
-
 
 menu(death_count = 0)
