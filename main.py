@@ -6,6 +6,10 @@ pygame.init()
 
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
+ENERGY_BAR_WIDTH = 200
+ENERGY_BAR_HEIGHT = 20
+ENERGY_BAR_COLOR = (0, 255, 0)  # Green color for energy bar
+ENERGY_DECREASE_RATE = 10.0  # Increased energy decrease rate per second
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Carregando imagens
@@ -53,8 +57,20 @@ class Dinosaur:
         self.dino_rect = self.image.get_rect()
         self.dino_rect.x = 80
         self.dino_rect.y = 310
+        self.last_energy_update_time = pygame.time.get_ticks()  # Last time energy was updated
 
     def update(self, userInput):
+        current_time = pygame.time.get_ticks()
+        time_elapsed = (current_time - self.last_energy_update_time) / 1000  # Convert milliseconds to seconds
+        
+        # Decrease energy over time
+        self.energy -= ENERGY_DECREASE_RATE * time_elapsed
+        if self.energy < 0:
+            self.energy = 0
+
+        # Update last energy update time
+        self.last_energy_update_time = current_time
+        
         if self.dino_duck:
             self.duck()
         if self.dino_run:
@@ -110,6 +126,8 @@ class Dinosaur:
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
+        # Draw energy bar
+        pygame.draw.rect(SCREEN, ENERGY_BAR_COLOR, (10, 10, self.energy * 2, ENERGY_BAR_HEIGHT))
 
 class PowerSupply:
     def __init__(self, x, y):
@@ -120,6 +138,8 @@ class PowerSupply:
 
     def effect(self, player):
         player.energy += 20
+        if player.energy > 100:  # Limit energy to 100
+            player.energy = 100
 
 class GraphicsCard:
     def __init__(self, x, y):
@@ -219,8 +239,7 @@ class Bird(Obstacle):
         SCREEN.blit(self.image[self.index // 5], self.rect)
         self.index += 1
 
-def menu(death_count):
-    global points
+def menu(death_count, points):
     run = True
     while run:
         SCREEN.fill((255,255,255))
@@ -231,7 +250,7 @@ def menu(death_count):
 
         elif death_count > 0:
             text = font.render("Pressione qualquer tecla para recomeçar!", True, (0,0,0))
-            score = font.render("Sua pontuação: " + str(points), True, (0,0,0))
+            score = font.render("Pontuação: " + str(points), True, (0,0,0))  # Display score points
             scoreRect = score.get_rect()
             scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
             SCREEN.blit(score, scoreRect)
@@ -243,7 +262,9 @@ def menu(death_count):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                pygame.quit()
+                quit()  # Exit the game
+                run = False  # Ensure the loop exits
             if event.type == pygame.KEYDOWN:
                 main()
 
@@ -262,7 +283,11 @@ def main():
     obstacles = []
     death_count = 0
     
-        #contador de pontuacao + aumento da velocidade
+    def check_energy():
+        if player.energy <= 0:
+            return True
+        return False
+
     def score():
         global points, game_speed
         points += 1
@@ -274,7 +299,6 @@ def main():
         textRect.center = (1000, 40)
         SCREEN.blit(text, textRect)
 
-    #criacao de paralax com background
     def background():
         global x_pos_bg, y_pos_bg
         image_width = BG.get_width()
@@ -288,7 +312,9 @@ def main():
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                pygame.quit()
+                quit()  # Exit the game
+                run = False  # Ensure the loop exits
 
         SCREEN.fill((255, 255, 255))
         userInput = pygame.key.get_pressed()
@@ -312,7 +338,7 @@ def main():
             if player.dino_rect.colliderect(obstacle.rect):
                 pygame.time.delay(1500)
                 death_count += 1
-                menu(death_count)
+                menu(death_count, points)  # Pass points to the menu
 
         for item in powerups:
             item.rect.x -= game_speed
@@ -327,12 +353,11 @@ def main():
 
         score()
 
+        if check_energy():
+            menu(death_count, points)  # Pass points to the menu
+            run = False  # End the game and return to menu
 
         pygame.display.update()
         clock.tick(30)
 
 main()
-
-
-
-menu(death_count = 0)
