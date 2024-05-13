@@ -15,6 +15,34 @@ pink_border_active = False
 pink_border_timer = 0  # Timer for 10 seconds
 PINK_BORDER_COLOR = (255, 105, 180)  # Pink color for the border
 
+class PointsUI:
+    def __init__(self):
+        self.x = SCREEN_WIDTH // 2  # Centered horizontally
+        self.y = 100  # At the top of the screen
+        self.text = "+50 points!"
+        self.font = pygame.font.Font(None, 36)
+        self.color = (0, 0, 0)  # Black color
+        self.visible = False
+        self.timer = 0
+
+    def show(self):
+        self.visible = True
+        self.timer = pygame.time.get_ticks()
+
+    def update(self):
+        if self.visible:
+            if pygame.time.get_ticks() - self.timer > 1000:  # UI stays visible for 1 second
+                self.visible = False
+
+    def draw(self, screen):
+        if self.visible:
+            text_surface = self.font.render(self.text, True, self.color)
+            text_rect = text_surface.get_rect(center=(self.x, self.y))
+            screen.blit(text_surface, text_rect)
+
+
+
+
 # Carregando imagens
 RUNNING = [pygame.image.load(os.path.join("Assets/Boy", "BoyWalking1.png")),
            pygame.image.load(os.path.join("Assets/Boy", "BoyWalking2.png"))]
@@ -145,6 +173,7 @@ class PowerSupply:
         if player.energy > 100:  # Limit energy to 100
             player.energy = 100
         points += 50
+        points_ui.show()
 
 class GraphicsCard:
     def __init__(self, x, y):
@@ -159,6 +188,7 @@ class GraphicsCard:
         pink_border_active = True  # Activate pink border effect
         pink_border_timer = pygame.time.get_ticks()  # Start the timer
         points += 50
+        points_ui.show()
 
 class SSD(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -173,6 +203,7 @@ class SSD(pygame.sprite.Sprite):
         player.speed_boost = True
         game_speed += 1
         points += 50
+        points_ui.show()
         
 def add_powerup():
     min_distance_between_powerups = 400  # Aumentando a distância mínima entre coletáveis
@@ -284,6 +315,8 @@ def menu(death_count, points):
             if event.type == pygame.KEYDOWN:
                 main()
 
+points_ui = PointsUI()
+
 #main
 def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, pink_border_active, pink_border_timer
@@ -357,6 +390,10 @@ def main():
                 menu(death_count, points)  # Pass points to the menu
 
         for item in powerups:
+            if player.dino_rect.colliderect(item.rect):
+                item.effect(player)
+                powerups.remove(item)
+                points_ui.show()
             item.rect.x -= game_speed
             SCREEN.blit(item.image, item.rect)
             if item.rect.x < -item.rect.width:
@@ -364,6 +401,9 @@ def main():
             if pink_border_active:
                 pygame.draw.rect(SCREEN, PINK_BORDER_COLOR, item.rect, 3)  # Draw pink border
             SCREEN.blit(item.image, item.rect)
+            
+        points_ui.update()
+        points_ui.draw(SCREEN)
 
         background()
 
