@@ -167,7 +167,9 @@ class SSD(pygame.sprite.Sprite):
 
     def effect(self, player):
         player.speed_boost = True
-
+        global game_speed  # Access the global game_speed variable
+        game_speed += 5  # Increase game speed by 5 when the player collects an SSD
+        
 def add_powerup():
     min_distance_between_powerups = 400  # Aumentando a distância mínima entre coletáveis
     if random.randint(0, 100) < 2:  # Reduzindo a probabilidade de criação de coletáveis
