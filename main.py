@@ -9,7 +9,7 @@ SCREEN_WIDTH = 1100
 ENERGY_BAR_WIDTH = 200
 ENERGY_BAR_HEIGHT = 20
 ENERGY_BAR_COLOR = (0, 255, 0)  # Green color for energy bar
-ENERGY_DECREASE_RATE = 5.0  # Energy decrease rate per second
+ENERGY_DECREASE_RATE = 10.0  # Increased energy decrease rate per second
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Carregando imagens
@@ -262,9 +262,12 @@ def menu(death_count, points):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                pygame.quit()
+                quit()  # Exit the game
+                run = False  # Ensure the loop exits
             if event.type == pygame.KEYDOWN:
                 main()
+
 #main
 def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles
@@ -309,7 +312,9 @@ def main():
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                pygame.quit()
+                quit()  # Exit the game
+                run = False  # Ensure the loop exits
 
         SCREEN.fill((255, 255, 255))
         userInput = pygame.key.get_pressed()
@@ -355,9 +360,4 @@ def main():
         pygame.display.update()
         clock.tick(30)
 
-    pygame.quit()
-    quit()
-
 main()
-
-menu(death_count = 0)
