@@ -44,6 +44,8 @@ class PointsUI:
 
 
 # Carregando imagens
+NEW_BG = pygame.image.load(os.path.join("Assets/Other", "NewBackground.jpeg"))
+
 RUNNING = [pygame.image.load(os.path.join("Assets/Boy", "BoyWalking1.png")),
            pygame.image.load(os.path.join("Assets/Boy", "BoyWalking2.png"))]
 
@@ -65,7 +67,7 @@ OBSTACLE_TWO = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
 
 CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 
-BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
+BG = pygame.image.load(os.path.join("Assets/Other", "Track3.png"))
 
 POWER_SUPPLY = pygame.image.load(os.path.join("Assets/PC_Hardware", "PowerSupply.png"))
 GRAPHICS_CARD = pygame.image.load(os.path.join("Assets/PC_Hardware", "GraphicsCard.png"))
@@ -135,15 +137,15 @@ class Dinosaur:
     def duck(self):
         self.image = self.duck_img[self.step_index // 5]
         
-        self.dino_rect.x = 80
-        self.dino_rect.y = 340
+        self.dino_rect.x = 90
+        self.dino_rect.y = 330
         self.step_index += 1
 
     def run(self):
         self.image = self.run_img[self.step_index // 5]
         
         self.dino_rect.x = 80
-        self.dino_rect.y = 310
+        self.dino_rect.y = 295
         self.step_index += 1
 
     def jump(self):
@@ -286,6 +288,15 @@ class Bird(Obstacle):
         SCREEN.blit(self.image[self.index // 5], self.rect)
         self.index += 1
 
+def draw_new_background(screen):
+    scaled_bg = pygame.transform.scale(NEW_BG, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen.blit(scaled_bg, (0, 0))  
+
+    # Create a semi-transparent black surface with the same dimensions as the screen
+    overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 150))  # Fill the surface with black color and set transparency to 100 (semi-transparent)
+    screen.blit(overlay, (0, 0))  # Draw the overlay on top of the background
+
 def menu(death_count, points):
     run = True
     while run:
@@ -367,6 +378,7 @@ def main():
 
         SCREEN.fill((255, 255, 255))
         userInput = pygame.key.get_pressed()
+        draw_new_background(SCREEN)
 
         pygame.draw.rect(SCREEN, (255, 0, 0), player.dino_rect, 2)  # Red rectangle around player's hit box
 
