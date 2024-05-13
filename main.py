@@ -282,7 +282,11 @@ def main():
     obstacles = []
     death_count = 0
     
-        #contador de pontuacao + aumento da velocidade
+    def check_energy():
+        if player.energy <= 0:
+            return True
+        return False
+
     def score():
         global points, game_speed
         points += 1
@@ -294,7 +298,6 @@ def main():
         textRect.center = (1000, 40)
         SCREEN.blit(text, textRect)
 
-    #criacao de paralax com background
     def background():
         global x_pos_bg, y_pos_bg
         image_width = BG.get_width()
@@ -347,12 +350,17 @@ def main():
 
         score()
 
+        if check_energy():
+            menu(death_count)
+            run = False  # End the game and return to menu
 
         pygame.display.update()
         clock.tick(30)
 
-main()
+    pygame.quit()
+    quit()
 
+main()
 
 
 menu(death_count = 0)
