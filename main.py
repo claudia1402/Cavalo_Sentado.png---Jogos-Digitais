@@ -140,9 +140,11 @@ class PowerSupply:
         self.rect.y = y
 
     def effect(self, player):
+        global points
         player.energy += 20
         if player.energy > 100:  # Limit energy to 100
             player.energy = 100
+        points += 50
 
 class GraphicsCard:
     def __init__(self, x, y):
@@ -152,10 +154,11 @@ class GraphicsCard:
         self.rect.y = y
 
     def effect(self, player):
-        global pink_border_active, pink_border_timer
+        global pink_border_active, pink_border_timer, points
         player.visibility_boost = True
         pink_border_active = True  # Activate pink border effect
         pink_border_timer = pygame.time.get_ticks()  # Start the timer
+        points += 50
 
 class SSD(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -166,9 +169,10 @@ class SSD(pygame.sprite.Sprite):
         self.rect.y = y
 
     def effect(self, player):
+        global game_speed, points  # Access the global game_speed variable
         player.speed_boost = True
-        global game_speed  # Access the global game_speed variable
-        game_speed += 1  
+        game_speed += 1
+        points += 50
         
 def add_powerup():
     min_distance_between_powerups = 400  # Aumentando a distância mínima entre coletáveis
