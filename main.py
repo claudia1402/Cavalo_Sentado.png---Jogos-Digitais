@@ -134,14 +134,14 @@ class Dinosaur:
 
     def duck(self):
         self.image = self.duck_img[self.step_index // 5]
-        self.dino_rect = self.image.get_rect()
+        
         self.dino_rect.x = 80
         self.dino_rect.y = 340
         self.step_index += 1
 
     def run(self):
         self.image = self.run_img[self.step_index // 5]
-        self.dino_rect = self.image.get_rect()
+        
         self.dino_rect.x = 80
         self.dino_rect.y = 310
         self.step_index += 1
@@ -368,6 +368,8 @@ def main():
         SCREEN.fill((255, 255, 255))
         userInput = pygame.key.get_pressed()
 
+        pygame.draw.rect(SCREEN, (255, 0, 0), player.dino_rect, 2)  # Red rectangle around player's hit box
+
         player.draw(SCREEN)
         player.update(userInput)
 
@@ -382,6 +384,7 @@ def main():
                 obstacles.append(Bird(OBSTACLE_TWO))
                 
         for obstacle in obstacles:
+            pygame.draw.rect(SCREEN, (255, 0, 0), obstacle.rect, 2)
             obstacle.draw(SCREEN)
             obstacle.update()
             if player.dino_rect.colliderect(obstacle.rect):
