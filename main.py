@@ -52,13 +52,13 @@ JUMPING = pygame.image.load(os.path.join("Assets/Boy", "BoyJump.png"))
 DUCKING = [pygame.image.load(os.path.join("Assets/Boy", "BoyDuck1.png")),
            pygame.image.load(os.path.join("Assets/Boy", "BoyDuck2.png"))]
 
-OBSTACLE_ONE_SMALL = [pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus1.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus2.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus3.png"))]
+OBSTACLE_ONE_SMALL = [pygame.image.load(os.path.join("Assets/Cactus", "SmallCable1.png")),
+                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCable2.png")),
+                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCable3.png"))]
 
-OBSTACLE_ONE_LARGE = [pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus1.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus2.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus3.png"))]
+OBSTACLE_ONE_LARGE = [pygame.image.load(os.path.join("Assets/Cactus", "LargeCable1.png")),
+                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCable2.png")),
+                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCable3.png"))]
 
 OBSTACLE_TWO = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
                 pygame.image.load(os.path.join("Assets/Bird", "Bird2.png"))]
@@ -260,14 +260,14 @@ class Obstacle:
     def draw(self, SCREEN):
         SCREEN.blit(self.image[self.type], self.rect)
 
-class SmallCactus(Obstacle):
+class SmallCable(Obstacle):
      def __init__(self,image):
         self.type = random.randint(0,2)
         super().__init__(image, self.type)
         self.rect.y = 325
 
 
-class LargeCactus(Obstacle):
+class LargeCable(Obstacle):
     def __init__(self,image):
         self.type = random.randint(0,2)
         super().__init__(image, self.type)
@@ -375,9 +375,9 @@ def main():
         
         if len(obstacles) == 0:
             if random.randint(0,2) == 0:
-                obstacles.append(SmallCactus(OBSTACLE_ONE_SMALL))
+                obstacles.append(SmallCable(OBSTACLE_ONE_SMALL))
             elif random.randint(0,2) == 1:
-                obstacles.append(LargeCactus(OBSTACLE_ONE_LARGE))
+                obstacles.append(LargeCable(OBSTACLE_ONE_LARGE))
             elif random.randint(0,2) == 2:
                 obstacles.append(Bird(OBSTACLE_TWO))
                 
