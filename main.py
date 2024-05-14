@@ -54,13 +54,13 @@ JUMPING = pygame.image.load(os.path.join("Assets/Boy", "BoyJump.png"))
 DUCKING = [pygame.image.load(os.path.join("Assets/Boy", "BoyDuck1.png")),
            pygame.image.load(os.path.join("Assets/Boy", "BoyDuck2.png"))]
 
-OBSTACLE_ONE_SMALL = [pygame.image.load(os.path.join("Assets/Cactus", "SmallCable1.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCable2.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCable3.png"))]
+OBSTACLE_ONE_SMALL = [pygame.image.load(os.path.join("Assets/Cactus", "SmallCable11.png")),
+                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCable22.png")),
+                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCable33.png"))]
 
-OBSTACLE_ONE_LARGE = [pygame.image.load(os.path.join("Assets/Cactus", "LargeCable1.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCable2.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCable3.png"))]
+OBSTACLE_ONE_LARGE = [pygame.image.load(os.path.join("Assets/Cactus", "LargeCable11.png")),
+                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCable22.png")),
+                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCable33.png"))]
 
 OBSTACLE_TWO = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
                 pygame.image.load(os.path.join("Assets/Bird", "Bird2.png"))]
@@ -69,9 +69,9 @@ CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 
 BG = pygame.image.load(os.path.join("Assets/Other", "Track3.png"))
 
-POWER_SUPPLY = pygame.image.load(os.path.join("Assets/PC_Hardware", "PowerSupply.png"))
-GRAPHICS_CARD = pygame.image.load(os.path.join("Assets/PC_Hardware", "GraphicsCard.png"))
-SSD_IMAGE = pygame.image.load(os.path.join("Assets/PC_Hardware", "SSD.png"))
+POWER_SUPPLY = pygame.image.load(os.path.join("Assets/PC_Hardware", "PowerSupply2.png"))
+GRAPHICS_CARD = pygame.image.load(os.path.join("Assets/PC_Hardware", "GraphicsCard2.png"))
+SSD_IMAGE = pygame.image.load(os.path.join("Assets/PC_Hardware", "SSD2.png"))
 
 class Dinosaur:
     def __init__(self):
@@ -436,6 +436,6 @@ def main():
             pink_border_active = False  # Deactivate pink border effect
         
         pygame.display.update()
-        clock.tick(40)
+        clock.tick(60)
 
 main()
