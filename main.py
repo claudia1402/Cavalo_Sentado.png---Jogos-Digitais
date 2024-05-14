@@ -26,7 +26,7 @@ class PointsUI:
         self.y = 100  # At the top of the screen
         self.text = "+50 points!"
         self.font = pygame.font.Font(None, 36)
-        self.color = (0, 0, 0)  # Black color
+        self.color = (255, 255, 255)  # White color
         self.visible = False
         self.timer = 0
 
@@ -59,13 +59,13 @@ JUMPING = pygame.image.load(os.path.join("Assets/Boy", "BoyJump.png"))
 DUCKING = [pygame.image.load(os.path.join("Assets/Boy", "BoyDuck1.png")),
            pygame.image.load(os.path.join("Assets/Boy", "BoyDuck2.png"))]
 
-OBSTACLE_ONE_SMALL = [pygame.image.load(os.path.join("Assets/Cactus", "SmallCable11.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCable22.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCable33.png"))]
+OBSTACLE_ONE_SMALL = [pygame.image.load(os.path.join("Assets/Cables", "SmallCable11.png")),
+                      pygame.image.load(os.path.join("Assets/Cables", "SmallCable22.png")),
+                      pygame.image.load(os.path.join("Assets/Cables", "SmallCable33.png"))]
 
-OBSTACLE_ONE_LARGE = [pygame.image.load(os.path.join("Assets/Cactus", "LargeCable11.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCable22.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCable33.png"))]
+OBSTACLE_ONE_LARGE = [pygame.image.load(os.path.join("Assets/Cables", "LargeCable11.png")),
+                      pygame.image.load(os.path.join("Assets/Cables", "LargeCable22.png")),
+                      pygame.image.load(os.path.join("Assets/Cables", "LargeCable33.png"))]
 
 OBSTACLE_TWO = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
                 pygame.image.load(os.path.join("Assets/Bird", "Bird2.png"))]
