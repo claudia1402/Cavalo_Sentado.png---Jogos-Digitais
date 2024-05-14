@@ -44,6 +44,8 @@ class PointsUI:
 
 
 # Carregando imagens
+NEW_BG = pygame.image.load(os.path.join("Assets/Other", "NewBackground.jpeg"))
+
 RUNNING = [pygame.image.load(os.path.join("Assets/Boy", "BoyWalking1.png")),
            pygame.image.load(os.path.join("Assets/Boy", "BoyWalking2.png"))]
 
@@ -52,24 +54,24 @@ JUMPING = pygame.image.load(os.path.join("Assets/Boy", "BoyJump.png"))
 DUCKING = [pygame.image.load(os.path.join("Assets/Boy", "BoyDuck1.png")),
            pygame.image.load(os.path.join("Assets/Boy", "BoyDuck2.png"))]
 
-OBSTACLE_ONE_SMALL = [pygame.image.load(os.path.join("Assets/Cactus", "SmallCable1.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCable2.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCable3.png"))]
+OBSTACLE_ONE_SMALL = [pygame.image.load(os.path.join("Assets/Cactus", "SmallCable11.png")),
+                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCable22.png")),
+                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCable33.png"))]
 
-OBSTACLE_ONE_LARGE = [pygame.image.load(os.path.join("Assets/Cactus", "LargeCable1.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCable2.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCable3.png"))]
+OBSTACLE_ONE_LARGE = [pygame.image.load(os.path.join("Assets/Cactus", "LargeCable11.png")),
+                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCable22.png")),
+                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCable33.png"))]
 
 OBSTACLE_TWO = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
                 pygame.image.load(os.path.join("Assets/Bird", "Bird2.png"))]
 
 CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
 
-BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
+BG = pygame.image.load(os.path.join("Assets/Other", "Track3.png"))
 
-POWER_SUPPLY = pygame.image.load(os.path.join("Assets/PC_Hardware", "PowerSupply.png"))
-GRAPHICS_CARD = pygame.image.load(os.path.join("Assets/PC_Hardware", "GraphicsCard.png"))
-SSD_IMAGE = pygame.image.load(os.path.join("Assets/PC_Hardware", "SSD.png"))
+POWER_SUPPLY = pygame.image.load(os.path.join("Assets/PC_Hardware", "PowerSupply2.png"))
+GRAPHICS_CARD = pygame.image.load(os.path.join("Assets/PC_Hardware", "GraphicsCard2.png"))
+SSD_IMAGE = pygame.image.load(os.path.join("Assets/PC_Hardware", "SSD2.png"))
 
 class Dinosaur:
     def __init__(self):
@@ -134,16 +136,16 @@ class Dinosaur:
 
     def duck(self):
         self.image = self.duck_img[self.step_index // 5]
-        self.dino_rect = self.image.get_rect()
-        self.dino_rect.x = 80
-        self.dino_rect.y = 340
+        
+        self.dino_rect.x = 90
+        self.dino_rect.y = 330
         self.step_index += 1
 
     def run(self):
         self.image = self.run_img[self.step_index // 5]
-        self.dino_rect = self.image.get_rect()
+        
         self.dino_rect.x = 80
-        self.dino_rect.y = 310
+        self.dino_rect.y = 295
         self.step_index += 1
 
     def jump(self):
@@ -286,6 +288,15 @@ class Bird(Obstacle):
         SCREEN.blit(self.image[self.index // 5], self.rect)
         self.index += 1
 
+def draw_new_background(screen):
+    scaled_bg = pygame.transform.scale(NEW_BG, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen.blit(scaled_bg, (0, 0))  
+
+    # Create a semi-transparent black surface with the same dimensions as the screen
+    overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 150))  # Fill the surface with black color and set transparency to 100 (semi-transparent)
+    screen.blit(overlay, (0, 0))  # Draw the overlay on top of the background
+
 def menu(death_count, points):
     run = True
     while run:
@@ -367,6 +378,9 @@ def main():
 
         SCREEN.fill((255, 255, 255))
         userInput = pygame.key.get_pressed()
+        draw_new_background(SCREEN)
+
+        pygame.draw.rect(SCREEN, (255, 0, 0), player.dino_rect, 2)  # Red rectangle around player's hit box
 
         player.draw(SCREEN)
         player.update(userInput)
@@ -382,6 +396,7 @@ def main():
                 obstacles.append(Bird(OBSTACLE_TWO))
                 
         for obstacle in obstacles:
+            pygame.draw.rect(SCREEN, (255, 0, 0), obstacle.rect, 2)
             obstacle.draw(SCREEN)
             obstacle.update()
             if player.dino_rect.colliderect(obstacle.rect):
@@ -421,6 +436,6 @@ def main():
             pink_border_active = False  # Deactivate pink border effect
         
         pygame.display.update()
-        clock.tick(40)
+        clock.tick(60)
 
 main()
