@@ -6,11 +6,16 @@ pygame.init()
 
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
+
+
 ENERGY_BAR_WIDTH = 200
 ENERGY_BAR_HEIGHT = 20
 ENERGY_BAR_COLOR = (0, 255, 0)  # Green color for energy bar
 ENERGY_DECREASE_RATE = 5.0  # Increased energy decrease rate per second
+
+
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
 pink_border_active = False
 pink_border_timer = 0  # Timer for 10 seconds
 PINK_BORDER_COLOR = (255, 105, 180)  # Pink color for the border
@@ -97,7 +102,7 @@ class Dinosaur:
         time_elapsed = (current_time - self.last_energy_update_time) / 1000  # Convert milliseconds to seconds
         
         # Decrease energy over time
-        self.energy -= ENERGY_DECREASE_RATE * time_elapsed
+        self.energy -= ENERGY_DECREASE_RATE / 60
         if self.energy < 0:
             self.energy = 0
 
@@ -332,6 +337,7 @@ points_ui = PointsUI()
 def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, pink_border_active, pink_border_timer
     run = True
+    dinosaur = Dinosaur()
     clock = pygame.time.Clock()
     player = Dinosaur()
     cloud = Cloud()
@@ -378,9 +384,8 @@ def main():
 
         SCREEN.fill((255, 255, 255))
         userInput = pygame.key.get_pressed()
+        dinosaur.update(userInput)
         draw_new_background(SCREEN)
-
-        pygame.draw.rect(SCREEN, (255, 0, 0), player.dino_rect, 2)  # Red rectangle around player's hit box
 
         player.draw(SCREEN)
         player.update(userInput)
@@ -396,7 +401,6 @@ def main():
                 obstacles.append(Bird(OBSTACLE_TWO))
                 
         for obstacle in obstacles:
-            pygame.draw.rect(SCREEN, (255, 0, 0), obstacle.rect, 2)
             obstacle.draw(SCREEN)
             obstacle.update()
             if player.dino_rect.colliderect(obstacle.rect):
