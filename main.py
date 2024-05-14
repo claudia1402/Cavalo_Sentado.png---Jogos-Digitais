@@ -208,7 +208,7 @@ class SSD(pygame.sprite.Sprite):
     def effect(self, player):
         global game_speed, points  # Access the global game_speed variable
         player.speed_boost = True
-        game_speed += 1
+        game_speed += 0.5
         points += 50
         points_ui.show()
         
@@ -299,7 +299,7 @@ def draw_new_background(screen):
 
     # Create a semi-transparent black surface with the same dimensions as the screen
     overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-    overlay.fill((0, 0, 0, 150))  # Fill the surface with black color and set transparency to 100 (semi-transparent)
+    overlay.fill((0, 0, 0, 180))  # Fill the surface with black color and set transparency to 100 (semi-transparent)
     screen.blit(overlay, (0, 0))  # Draw the overlay on top of the background
 
 def menu(death_count, points):
@@ -358,7 +358,7 @@ def main():
         global points, game_speed
         points += 1
         if points % 100 == 0:
-            game_speed += 0.5
+            game_speed += 0.2
 
         text = font.render("Pontos: " + str(points), True, (0,0,0))
         textRect = text.get_rect()
