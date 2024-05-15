@@ -458,7 +458,7 @@ def main():
         if points % 100 == 0:
             game_speed += 0.2
 
-        text = font.render("Pontos: " + str(points), True, (0,0,0))
+        text = font.render("Pontos: " + str(points), True, (255,255,255))
         textRect = text.get_rect()
         textRect.center = (1000, 40)
         SCREEN.blit(text, textRect)
