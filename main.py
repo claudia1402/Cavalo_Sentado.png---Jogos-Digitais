@@ -67,8 +67,8 @@ OBSTACLE_ONE_LARGE = [pygame.image.load(os.path.join("Assets/Cables", "LargeCabl
                       pygame.image.load(os.path.join("Assets/Cables", "LargeCable22.png")),
                       pygame.image.load(os.path.join("Assets/Cables", "LargeCable33.png"))]
 
-OBSTACLE_TWO = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
-                pygame.image.load(os.path.join("Assets/Bird", "Bird2.png"))]
+OBSTACLE_TWO = [pygame.image.load(os.path.join("Assets/FlyEnemy", "FlyEnemy1.png")),
+                pygame.image.load(os.path.join("Assets/FlyEnemy", "FlyEnemy2.png"))]
 
 BG = pygame.image.load(os.path.join("Assets/Other", "Track3.png"))
 
@@ -262,7 +262,7 @@ class LargeCable(Obstacle):
         super().__init__(image, self.type)
         self.rect.y = 300
 
-class Bird(Obstacle):
+class FlyEnemy(Obstacle):
     def __init__(self,image):
         self.type = 0
         super().__init__(image, self.type)
@@ -379,7 +379,7 @@ def main():
             elif random.randint(0,2) == 1:
                 obstacles.append(LargeCable(OBSTACLE_ONE_LARGE))
             elif random.randint(0,2) == 2:
-                obstacles.append(Bird(OBSTACLE_TWO))
+                obstacles.append(FlyEnemy(OBSTACLE_TWO))
                 
         for obstacle in obstacles:
             obstacle.draw(SCREEN)
