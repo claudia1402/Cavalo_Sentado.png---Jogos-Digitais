@@ -12,7 +12,7 @@ SCREEN_WIDTH = 1100
 ENERGY_BAR_WIDTH = 200
 ENERGY_BAR_HEIGHT = 20
 ENERGY_BAR_COLOR = (0, 255, 0)  # Green color for energy bar
-ENERGY_DECREASE_RATE = 5.0  # Increased energy decrease rate per second
+ENERGY_DECREASE_RATE = 3.0  # Increased energy decrease rate per second
 
 
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -89,21 +89,26 @@ class Boy:
         self.boy_run = True
         self.boy_jump = False
         self.step_index = 0
-        self.jump_vel = 8.5
+        self.jump_vel = 6.5
         self.image = self.run_img[0]
-        self.dino_rect = self.image.get_rect()
-        self.dino_rect.x = 80
-        self.dino_rect.y = 310
+        self.boy_rect = self.image.get_rect()
+        self.boy_rect.x = 80
+        self.boy_rect.y = 310
         self.last_energy_update_time = pygame.time.get_ticks()  # Last time energy was updated
 
     def update(self, userInput):
         current_time = pygame.time.get_ticks()
         time_elapsed = (current_time - self.last_energy_update_time) / 1000  # Convert milliseconds to seconds
         
+         # Debug print
+        print("Current Energy:", self.energy)
+        
         # Decrease energy over time
         self.energy -= ENERGY_DECREASE_RATE / 60
         if self.energy < 0:
             self.energy = 0
+            
+        
 
         # Update last energy update time
         self.last_energy_update_time = current_time
@@ -119,7 +124,7 @@ class Boy:
             self.step_index = 0
 
         for item in powerups:
-            if self.dino_rect.colliderect(item.rect):
+            if self.boy_rect.colliderect(item.rect):
                 item.effect(self)
                 powerups.remove(item)
 
@@ -141,30 +146,31 @@ class Boy:
     def duck(self):
         self.image = self.duck_img[self.step_index // 5]
         
-        self.dino_rect.x = 90
-        self.dino_rect.y = 330
+        self.boy_rect.x = 90
+        self.boy_rect.y = 330
         self.step_index += 1
 
     def run(self):
         self.image = self.run_img[self.step_index // 5]
         
-        self.dino_rect.x = 80
-        self.dino_rect.y = 295
+        self.boy_rect.x = 80
+        self.boy_rect.y = 295
         self.step_index += 1
 
     def jump(self):
         self.image = self.jump_img
         if self.boy_jump:
-            self.dino_rect.y -= self.jump_vel * 4
-            self.jump_vel -= 0.8
-        if self.jump_vel < -8.5:
+            self.boy_rect.y -= self.jump_vel * 4
+            self.jump_vel -= 0.4
+        if self.jump_vel < -6.5:
             self.boy_jump = False
-            self.jump_vel = 8.5
+            self.jump_vel = 6.5
 
     def draw(self, SCREEN):
-        SCREEN.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
+        SCREEN.blit(self.image, (self.boy_rect.x, self.boy_rect.y))
         # Draw energy bar
         pygame.draw.rect(SCREEN, ENERGY_BAR_COLOR, (10, 10, self.energy * 2, ENERGY_BAR_HEIGHT))
+        pygame.draw.rect(SCREEN, (0, 0, 0), (10, 10, ENERGY_BAR_WIDTH, ENERGY_BAR_HEIGHT), 2)
 
 class PowerSupply:
     def __init__(self, x, y):
@@ -180,6 +186,9 @@ class PowerSupply:
             player.energy = 100
         points += 50
         points_ui.show()
+        
+        # Debug print
+        print("Player Energy after collecting Power Supply:", player.energy)
 
 class GraphicsCard:
     def __init__(self, x, y):
@@ -409,7 +418,6 @@ def help_screen():
 def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, pink_border_active, pink_border_timer
     run = True
-    boy = Boy()
     clock = pygame.time.Clock()
     player = Boy()
     game_speed = 14
@@ -455,7 +463,7 @@ def main():
 
         SCREEN.fill((255, 255, 255))
         userInput = pygame.key.get_pressed()
-        boy.update(userInput)
+        player.update(userInput)
         draw_new_background(SCREEN)
 
         player.draw(SCREEN)
@@ -474,13 +482,13 @@ def main():
         for obstacle in obstacles:
             obstacle.draw(SCREEN)
             obstacle.update()
-            if player.dino_rect.colliderect(obstacle.rect):
+            if player.boy_rect.colliderect(obstacle.rect):
                 pygame.time.delay(1500)
                 death_count += 1
                 gameOver(death_count, points)  # Pass points to the gameOver
 
         for item in powerups:
-            if player.dino_rect.colliderect(item.rect):
+            if player.boy_rect.colliderect(item.rect):
                 item.effect(player)
                 powerups.remove(item)
                 points_ui.show()
