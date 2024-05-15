@@ -1,6 +1,7 @@
 import pygame
 import os
 import random
+import time
 
 pygame.init()
 
@@ -339,9 +340,23 @@ def menu_screen():
                 mouse_pos = pygame.mouse.get_pos()
                 if play_rect.collidepoint(mouse_pos):
                     run_menu = False
-                    main()
-                elif help_rect.collidepoint(mouse_pos):
-                    help_screen()
+                    countdown_screen()
+
+def countdown_screen():
+    global SCREEN
+    font = pygame.font.Font("freesansbold.ttf", 100)
+    countdown_text = [font.render("1", True, (255, 255, 255)),
+                      font.render("2", True, (255, 255, 255)),
+                      font.render("3", True, (255, 255, 255))]
+    countdown_rect = countdown_text[0].get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+
+    for i in range(3, 0, -1):
+        SCREEN.fill((0, 0, 0))
+        SCREEN.blit(countdown_text[i - 1], countdown_rect)
+        pygame.display.update()
+        time.sleep(1)
+
+    main() 
 
 def help_screen():
     global SCREEN
