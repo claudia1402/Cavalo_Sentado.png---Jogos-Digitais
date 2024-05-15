@@ -6,11 +6,16 @@ pygame.init()
 
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
+
+
 ENERGY_BAR_WIDTH = 200
 ENERGY_BAR_HEIGHT = 20
 ENERGY_BAR_COLOR = (0, 255, 0)  # Green color for energy bar
 ENERGY_DECREASE_RATE = 5.0  # Increased energy decrease rate per second
+
+
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
 pink_border_active = False
 pink_border_timer = 0  # Timer for 10 seconds
 PINK_BORDER_COLOR = (255, 105, 180)  # Pink color for the border
@@ -21,7 +26,7 @@ class PointsUI:
         self.y = 100  # At the top of the screen
         self.text = "+50 points!"
         self.font = pygame.font.Font(None, 36)
-        self.color = (0, 0, 0)  # Black color
+        self.color = (255, 255, 255)  # White color
         self.visible = False
         self.timer = 0
 
@@ -54,18 +59,16 @@ JUMPING = pygame.image.load(os.path.join("Assets/Boy", "BoyJump.png"))
 DUCKING = [pygame.image.load(os.path.join("Assets/Boy", "BoyDuck1.png")),
            pygame.image.load(os.path.join("Assets/Boy", "BoyDuck2.png"))]
 
-OBSTACLE_ONE_SMALL = [pygame.image.load(os.path.join("Assets/Cactus", "SmallCable11.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCable22.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "SmallCable33.png"))]
+OBSTACLE_ONE_SMALL = [pygame.image.load(os.path.join("Assets/Cables", "SmallCable11.png")),
+                      pygame.image.load(os.path.join("Assets/Cables", "SmallCable22.png")),
+                      pygame.image.load(os.path.join("Assets/Cables", "SmallCable33.png"))]
 
-OBSTACLE_ONE_LARGE = [pygame.image.load(os.path.join("Assets/Cactus", "LargeCable11.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCable22.png")),
-                      pygame.image.load(os.path.join("Assets/Cactus", "LargeCable33.png"))]
+OBSTACLE_ONE_LARGE = [pygame.image.load(os.path.join("Assets/Cables", "LargeCable11.png")),
+                      pygame.image.load(os.path.join("Assets/Cables", "LargeCable22.png")),
+                      pygame.image.load(os.path.join("Assets/Cables", "LargeCable33.png"))]
 
-OBSTACLE_TWO = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
-                pygame.image.load(os.path.join("Assets/Bird", "Bird2.png"))]
-
-CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
+OBSTACLE_TWO = [pygame.image.load(os.path.join("Assets/FlyEnemy", "FlyEnemy1.png")),
+                pygame.image.load(os.path.join("Assets/FlyEnemy", "FlyEnemy2.png"))]
 
 BG = pygame.image.load(os.path.join("Assets/Other", "Track3.png"))
 
@@ -73,7 +76,7 @@ POWER_SUPPLY = pygame.image.load(os.path.join("Assets/PC_Hardware", "PowerSupply
 GRAPHICS_CARD = pygame.image.load(os.path.join("Assets/PC_Hardware", "GraphicsCard2.png"))
 SSD_IMAGE = pygame.image.load(os.path.join("Assets/PC_Hardware", "SSD2.png"))
 
-class Dinosaur:
+class Boy:
     def __init__(self):
         self.energy = 100
         self.visibility_boost = False
@@ -81,9 +84,9 @@ class Dinosaur:
         self.duck_img = DUCKING
         self.run_img = RUNNING
         self.jump_img = JUMPING
-        self.dino_duck = False
-        self.dino_run = True
-        self.dino_jump = False
+        self.boy_duck = False
+        self.boy_run = True
+        self.boy_jump = False
         self.step_index = 0
         self.jump_vel = 8.5
         self.image = self.run_img[0]
@@ -97,18 +100,18 @@ class Dinosaur:
         time_elapsed = (current_time - self.last_energy_update_time) / 1000  # Convert milliseconds to seconds
         
         # Decrease energy over time
-        self.energy -= ENERGY_DECREASE_RATE * time_elapsed
+        self.energy -= ENERGY_DECREASE_RATE / 60
         if self.energy < 0:
             self.energy = 0
 
         # Update last energy update time
         self.last_energy_update_time = current_time
         
-        if self.dino_duck:
+        if self.boy_duck:
             self.duck()
-        if self.dino_run:
+        if self.boy_run:
             self.run()
-        if self.dino_jump:
+        if self.boy_jump:
             self.jump()
 
         if self.step_index >= 10:
@@ -119,20 +122,20 @@ class Dinosaur:
                 item.effect(self)
                 powerups.remove(item)
 
-        if userInput[pygame.K_UP] and not self.dino_jump:
-            self.dino_duck = False
-            self.dino_run = False
-            self.dino_jump = True
+        if userInput[pygame.K_UP] and not self.boy_jump:
+            self.boy_duck = False
+            self.boy_run = False
+            self.boy_jump = True
 
-        elif userInput[pygame.K_DOWN] and not self.dino_jump:
-            self.dino_duck = True
-            self.dino_run = False
-            self.dino_jump = False
+        elif userInput[pygame.K_DOWN] and not self.boy_jump:
+            self.boy_duck = True
+            self.boy_run = False
+            self.boy_jump = False
 
-        elif not (self.dino_jump or userInput[pygame.K_DOWN]):
-            self.dino_duck = False
-            self.dino_run = True
-            self.dino_jump = False
+        elif not (self.boy_jump or userInput[pygame.K_DOWN]):
+            self.boy_duck = False
+            self.boy_run = True
+            self.boy_jump = False
 
     def duck(self):
         self.image = self.duck_img[self.step_index // 5]
@@ -150,11 +153,11 @@ class Dinosaur:
 
     def jump(self):
         self.image = self.jump_img
-        if self.dino_jump:
+        if self.boy_jump:
             self.dino_rect.y -= self.jump_vel * 4
             self.jump_vel -= 0.8
         if self.jump_vel < -8.5:
-            self.dino_jump = False
+            self.boy_jump = False
             self.jump_vel = 8.5
 
     def draw(self, SCREEN):
@@ -203,7 +206,7 @@ class SSD(pygame.sprite.Sprite):
     def effect(self, player):
         global game_speed, points  # Access the global game_speed variable
         player.speed_boost = True
-        game_speed += 1
+        game_speed += 0.5
         points += 50
         points_ui.show()
         
@@ -228,22 +231,6 @@ def add_powerup():
             powerups.append(SSD(new_powerup_x, new_powerup_y))
             
 powerups = []
-
-class Cloud:
-    def __init__(self):
-        self.x = SCREEN_WIDTH + random.randint(800,1000)
-        self.y = random.randint(50,100)
-        self.image = CLOUD
-        self.width = self.image.get_width()
-
-    def update(self):
-        self.x -= game_speed
-        if self.x < -self.width:
-            self.x = SCREEN_WIDTH + random.randint(2500,3000)
-            self.y = random.randint(50,100)
-
-    def draw(self, SCREEN):
-        SCREEN.blit(self.image, (self.x, self.y))
 
 class Obstacle:
     def __init__(self,image,type):
@@ -275,11 +262,11 @@ class LargeCable(Obstacle):
         super().__init__(image, self.type)
         self.rect.y = 300
 
-class Bird(Obstacle):
+class FlyEnemy(Obstacle):
     def __init__(self,image):
         self.type = 0
         super().__init__(image, self.type)
-        self.rect.y = 250
+        self.rect.y = 180
         self.index = 0
 
     def draw(self, SCREEN):
@@ -294,10 +281,10 @@ def draw_new_background(screen):
 
     # Create a semi-transparent black surface with the same dimensions as the screen
     overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-    overlay.fill((0, 0, 0, 150))  # Fill the surface with black color and set transparency to 100 (semi-transparent)
+    overlay.fill((0, 0, 0, 180))  # Fill the surface with black color and set transparency to 100 (semi-transparent)
     screen.blit(overlay, (0, 0))  # Draw the overlay on top of the background
 
-def menu(death_count, points):
+def gameOver(death_count, points):
     run = True
     while run:
         SCREEN.fill((255,255,255))
@@ -332,9 +319,9 @@ points_ui = PointsUI()
 def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, pink_border_active, pink_border_timer
     run = True
+    boy = Boy()
     clock = pygame.time.Clock()
-    player = Dinosaur()
-    cloud = Cloud()
+    player = Boy()
     game_speed = 14
     x_pos_bg = 0
     y_pos_bg = 380
@@ -352,7 +339,7 @@ def main():
         global points, game_speed
         points += 1
         if points % 100 == 0:
-            game_speed += 0.5
+            game_speed += 0.2
 
         text = font.render("Pontos: " + str(points), True, (0,0,0))
         textRect = text.get_rect()
@@ -378,9 +365,8 @@ def main():
 
         SCREEN.fill((255, 255, 255))
         userInput = pygame.key.get_pressed()
+        boy.update(userInput)
         draw_new_background(SCREEN)
-
-        pygame.draw.rect(SCREEN, (255, 0, 0), player.dino_rect, 2)  # Red rectangle around player's hit box
 
         player.draw(SCREEN)
         player.update(userInput)
@@ -393,16 +379,15 @@ def main():
             elif random.randint(0,2) == 1:
                 obstacles.append(LargeCable(OBSTACLE_ONE_LARGE))
             elif random.randint(0,2) == 2:
-                obstacles.append(Bird(OBSTACLE_TWO))
+                obstacles.append(FlyEnemy(OBSTACLE_TWO))
                 
         for obstacle in obstacles:
-            pygame.draw.rect(SCREEN, (255, 0, 0), obstacle.rect, 2)
             obstacle.draw(SCREEN)
             obstacle.update()
             if player.dino_rect.colliderect(obstacle.rect):
                 pygame.time.delay(1500)
                 death_count += 1
-                menu(death_count, points)  # Pass points to the menu
+                gameOver(death_count, points)  # Pass points to the gameOver
 
         for item in powerups:
             if player.dino_rect.colliderect(item.rect):
@@ -422,14 +407,11 @@ def main():
 
         background()
 
-        cloud.draw(SCREEN)
-        cloud.update()
-
         score()
 
         if check_energy():
-            menu(death_count, points)  # Pass points to the menu
-            run = False  # End the game and return to menu
+            gameOver(death_count, points)  # Pass points to the gameOver
+            run = False  # End the game and return to gameOver
             
         current_time = pygame.time.get_ticks()
         if pink_border_active and current_time - pink_border_timer > 10000:  # Check if 10 seconds have passed
