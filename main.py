@@ -78,7 +78,7 @@ POWER_SUPPLY = pygame.image.load(os.path.join("Assets/PC_Hardware", "PowerSupply
 GRAPHICS_CARD = pygame.image.load(os.path.join("Assets/PC_Hardware", "GraphicsCard2.png"))
 SSD_IMAGE = pygame.image.load(os.path.join("Assets/PC_Hardware", "SSD2.png"))
 
-class Dinosaur:
+class Boy:
     def __init__(self):
         self.energy = 100
         self.visibility_boost = False
@@ -86,9 +86,9 @@ class Dinosaur:
         self.duck_img = DUCKING
         self.run_img = RUNNING
         self.jump_img = JUMPING
-        self.dino_duck = False
-        self.dino_run = True
-        self.dino_jump = False
+        self.boy_duck = False
+        self.boy_run = True
+        self.boy_jump = False
         self.step_index = 0
         self.jump_vel = 8.5
         self.image = self.run_img[0]
@@ -109,11 +109,11 @@ class Dinosaur:
         # Update last energy update time
         self.last_energy_update_time = current_time
         
-        if self.dino_duck:
+        if self.boy_duck:
             self.duck()
-        if self.dino_run:
+        if self.boy_run:
             self.run()
-        if self.dino_jump:
+        if self.boy_jump:
             self.jump()
 
         if self.step_index >= 10:
@@ -124,20 +124,20 @@ class Dinosaur:
                 item.effect(self)
                 powerups.remove(item)
 
-        if userInput[pygame.K_UP] and not self.dino_jump:
-            self.dino_duck = False
-            self.dino_run = False
-            self.dino_jump = True
+        if userInput[pygame.K_UP] and not self.boy_jump:
+            self.boy_duck = False
+            self.boy_run = False
+            self.boy_jump = True
 
-        elif userInput[pygame.K_DOWN] and not self.dino_jump:
-            self.dino_duck = True
-            self.dino_run = False
-            self.dino_jump = False
+        elif userInput[pygame.K_DOWN] and not self.boy_jump:
+            self.boy_duck = True
+            self.boy_run = False
+            self.boy_jump = False
 
-        elif not (self.dino_jump or userInput[pygame.K_DOWN]):
-            self.dino_duck = False
-            self.dino_run = True
-            self.dino_jump = False
+        elif not (self.boy_jump or userInput[pygame.K_DOWN]):
+            self.boy_duck = False
+            self.boy_run = True
+            self.boy_jump = False
 
     def duck(self):
         self.image = self.duck_img[self.step_index // 5]
@@ -155,11 +155,11 @@ class Dinosaur:
 
     def jump(self):
         self.image = self.jump_img
-        if self.dino_jump:
+        if self.boy_jump:
             self.dino_rect.y -= self.jump_vel * 4
             self.jump_vel -= 0.8
         if self.jump_vel < -8.5:
-            self.dino_jump = False
+            self.boy_jump = False
             self.jump_vel = 8.5
 
     def draw(self, SCREEN):
@@ -337,9 +337,9 @@ points_ui = PointsUI()
 def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, pink_border_active, pink_border_timer
     run = True
-    dinosaur = Dinosaur()
+    boy = Boy()
     clock = pygame.time.Clock()
-    player = Dinosaur()
+    player = Boy()
     cloud = Cloud()
     game_speed = 14
     x_pos_bg = 0
@@ -384,7 +384,7 @@ def main():
 
         SCREEN.fill((255, 255, 255))
         userInput = pygame.key.get_pressed()
-        dinosaur.update(userInput)
+        boy.update(userInput)
         draw_new_background(SCREEN)
 
         player.draw(SCREEN)
