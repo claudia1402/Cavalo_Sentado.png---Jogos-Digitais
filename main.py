@@ -380,13 +380,18 @@ def help_screen():
     lorem_ipsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
     lorem_ipsum_text = font.render(lorem_ipsum, True, (255, 255, 255))
     back_text = font.render("Back", True, (255, 255, 255))
-    back_rect = back_text.get_rect(center=(SCREEN_WIDTH // 2, 500))
-
+    back_rect = back_text.get_rect(topleft=(20, 20))  # Position top left
+    
     while run_help:
         SCREEN.fill((0, 0, 0))
+        
+        # Draw "Back" label
+        SCREEN.blit(back_text, back_rect)
+        
+        # Draw title and lorem ipsum text
         SCREEN.blit(title_text, (SCREEN_WIDTH // 2 - title_text.get_width() // 2, 100))
         SCREEN.blit(lorem_ipsum_text, (50, 200))
-        SCREEN.blit(back_text, back_rect)
+        
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -394,12 +399,11 @@ def help_screen():
                 pygame.quit()
                 quit()
                 run_help = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
-                if back_rect.collidepoint(mouse_pos):
+                if back_rect.collidepoint(mouse_pos):  # Check if mouse click is on "Back" label
                     run_help = False
                     menu_screen()
-
 
 #main
 def main():
