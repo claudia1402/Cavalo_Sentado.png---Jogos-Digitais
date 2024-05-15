@@ -89,7 +89,7 @@ class Boy:
         self.boy_run = True
         self.boy_jump = False
         self.step_index = 0
-        self.jump_vel = 6.5
+        self.jump_vel = 7.4
         self.image = self.run_img[0]
         self.boy_rect = self.image.get_rect()
         self.boy_rect.x = 80
@@ -162,9 +162,9 @@ class Boy:
         if self.boy_jump:
             self.boy_rect.y -= self.jump_vel * 4
             self.jump_vel -= 0.4
-        if self.jump_vel < -6.5:
+        if self.jump_vel < -10.0:
             self.boy_jump = False
-            self.jump_vel = 6.5
+            self.jump_vel = 7.4
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.boy_rect.x, self.boy_rect.y))
