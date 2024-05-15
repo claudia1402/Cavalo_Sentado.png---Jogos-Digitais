@@ -238,6 +238,16 @@ def add_powerup():
                 overlapping = True
                 break
         
+        for existing_powerup in powerups:
+            if existing_powerup.rect.colliderect(new_powerup_rect):
+                overlapping = True
+                break
+        for existing_powerup in powerups:
+            if existing_powerup != last_powerup:  # Exclude checking against the last added powerup
+                if existing_powerup.rect.colliderect(new_powerup_rect):
+                    overlapping = True
+                    break
+        
         if not overlapping:  # Only add if no overlap with obstacles
             if powerup_type == "power_supply":
                 powerups.append(PowerSupply(new_powerup_x, new_powerup_y))
