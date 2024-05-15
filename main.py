@@ -399,27 +399,38 @@ def countdown_screen():
         time.sleep(1)
 
     main()
-
+    
 def help_screen():
     global SCREEN
     run_help = True
-    font = pygame.font.Font("freesansbold.ttf", 30)
-    title_text = font.render("Help", True, (255, 255, 255))
-    lorem_ipsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    lorem_ipsum_text = font.render(lorem_ipsum, True, (255, 255, 255))
-    back_text = font.render("Back", True, (255, 255, 255))
-    back_rect = back_text.get_rect(topleft=(20, 20))  # Position top left
+    font_title = pygame.font.Font("freesansbold.ttf", 40)
+    font_subtitle = pygame.font.Font("freesansbold.ttf", 30)
+    font_description = pygame.font.Font("freesansbold.ttf", 20)
     
+    title_text = font_title.render("How It Works", True, (255, 255, 255))
+    subtitle_text = font_subtitle.render("COLLECT", True, (255, 255, 255))
+    description_text = font_description.render("Collect Hardware pieces to acquire points and understand what benefits/functions they can have:", True, (255, 255, 255))
+    video_card_text = font_description.render("VIDEO CARD", True, (255, 255, 255))
+    video_card_description = font_description.render("This item is responsible for viewing the graphics on the PC. \n POWER: VIEW COLLECTABLES EASIER. +50 POINTS.", True, (255, 255, 255))
+
+    title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 100))
+    subtitle_rect = subtitle_text.get_rect(center=(SCREEN_WIDTH // 2, 200))
+    description_rect = description_text.get_rect(center=(SCREEN_WIDTH // 2, 250))
+    video_card_text_rect = video_card_text.get_rect(left=50, top=310)
+    video_card_description_rect = video_card_description.get_rect(left=50, top=340)
+
     while run_help:
         SCREEN.fill((0, 0, 0))
-        
-        # Draw "Back" label
-        SCREEN.blit(back_text, back_rect)
-        
-        # Draw title and lorem ipsum text
-        SCREEN.blit(title_text, (SCREEN_WIDTH // 2 - title_text.get_width() // 2, 100))
-        SCREEN.blit(lorem_ipsum_text, (50, 200))
-        
+
+        # Draw title, subtitle, and description
+        SCREEN.blit(title_text, title_rect)
+        SCREEN.blit(subtitle_text, subtitle_rect)
+        SCREEN.blit(description_text, description_rect)
+
+        # Draw text for video card
+        SCREEN.blit(video_card_text, video_card_text_rect)
+        SCREEN.blit(video_card_description, video_card_description_rect)
+
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -429,9 +440,13 @@ def help_screen():
                 run_help = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
-                if back_rect.collidepoint(mouse_pos):  # Check if mouse click is on "Back" label
+                # Check if the back button is clicked
+                if back_rect.collidepoint(mouse_pos):
                     run_help = False
                     menu_screen()
+
+
+
 
 #main
 def main():
