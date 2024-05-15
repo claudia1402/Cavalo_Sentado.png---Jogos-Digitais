@@ -284,7 +284,7 @@ def draw_new_background(screen):
     overlay.fill((0, 0, 0, 180))  # Fill the surface with black color and set transparency to 100 (semi-transparent)
     screen.blit(overlay, (0, 0))  # Draw the overlay on top of the background
 
-def menu(death_count, points):
+def gameOver(death_count, points):
     run = True
     while run:
         SCREEN.fill((255,255,255))
@@ -387,7 +387,7 @@ def main():
             if player.dino_rect.colliderect(obstacle.rect):
                 pygame.time.delay(1500)
                 death_count += 1
-                menu(death_count, points)  # Pass points to the menu
+                gameOver(death_count, points)  # Pass points to the gameOver
 
         for item in powerups:
             if player.dino_rect.colliderect(item.rect):
@@ -410,8 +410,8 @@ def main():
         score()
 
         if check_energy():
-            menu(death_count, points)  # Pass points to the menu
-            run = False  # End the game and return to menu
+            gameOver(death_count, points)  # Pass points to the gameOver
+            run = False  # End the game and return to gameOver
             
         current_time = pygame.time.get_ticks()
         if pink_border_active and current_time - pink_border_timer > 10000:  # Check if 10 seconds have passed
