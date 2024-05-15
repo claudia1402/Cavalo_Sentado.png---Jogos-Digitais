@@ -315,6 +315,63 @@ def gameOver(death_count, points):
 
 points_ui = PointsUI()
 
+def menu_screen():
+    global SCREEN
+    run_menu = True
+    font = pygame.font.Font("freesansbold.ttf", 40)
+    play_text = font.render("Play", True, (255, 255, 255))
+    play_rect = play_text.get_rect(center=(SCREEN_WIDTH // 2, 200))
+    help_text = font.render("Help", True, (255, 255, 255))
+    help_rect = help_text.get_rect(center=(SCREEN_WIDTH // 2, 300))
+
+    while run_menu:
+        SCREEN.fill((0, 0, 0))
+        SCREEN.blit(play_text, play_rect)
+        SCREEN.blit(help_text, help_rect)
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+                run_menu = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if play_rect.collidepoint(mouse_pos):
+                    run_menu = False
+                    main()
+                elif help_rect.collidepoint(mouse_pos):
+                    help_screen()
+
+def help_screen():
+    global SCREEN
+    run_help = True
+    font = pygame.font.Font("freesansbold.ttf", 30)
+    title_text = font.render("Help", True, (255, 255, 255))
+    lorem_ipsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    lorem_ipsum_text = font.render(lorem_ipsum, True, (255, 255, 255))
+    back_text = font.render("Back", True, (255, 255, 255))
+    back_rect = back_text.get_rect(center=(SCREEN_WIDTH // 2, 500))
+
+    while run_help:
+        SCREEN.fill((0, 0, 0))
+        SCREEN.blit(title_text, (SCREEN_WIDTH // 2 - title_text.get_width() // 2, 100))
+        SCREEN.blit(lorem_ipsum_text, (50, 200))
+        SCREEN.blit(back_text, back_rect)
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+                run_help = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if back_rect.collidepoint(mouse_pos):
+                    run_help = False
+                    menu_screen()
+
+
 #main
 def main():
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, pink_border_active, pink_border_timer
@@ -420,4 +477,4 @@ def main():
         pygame.display.update()
         clock.tick(60)
 
-main()
+menu_screen()
