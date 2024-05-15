@@ -317,18 +317,30 @@ def gameOver(death_count, points):
 points_ui = PointsUI()
 
 def menu_screen():
-    global SCREEN
+    global SCREEN, NEW_BG
     run_menu = True
     font = pygame.font.Font("freesansbold.ttf", 40)
-    play_text = font.render("Play", True, (255, 255, 255))
+    play_text = font.render("Jogar", True, (255, 255, 255))
     play_rect = play_text.get_rect(center=(SCREEN_WIDTH // 2, 200))
-    help_text = font.render("Help", True, (255, 255, 255))
+    help_text = font.render("Como Funciona", True, (255, 255, 255))
     help_rect = help_text.get_rect(center=(SCREEN_WIDTH // 2, 300))
 
     while run_menu:
-        SCREEN.fill((0, 0, 0))
+        
+        
+        # Scale and blit background image to cover the entire screen
+        scaled_bg = pygame.transform.scale(NEW_BG, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        SCREEN.blit(scaled_bg, (0, 0))
+        
+        # Blit semi-transparent black surface
+        overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 128))  # 128 for semi-transparency
+        SCREEN.blit(overlay, (0, 0))
+        
+        # Blit menu text
         SCREEN.blit(play_text, play_rect)
         SCREEN.blit(help_text, help_rect)
+        
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -345,9 +357,10 @@ def menu_screen():
 def countdown_screen():
     global SCREEN
     font = pygame.font.Font("freesansbold.ttf", 100)
-    countdown_text = [font.render("1", True, (255, 255, 255)),
+    countdown_text = [font.render("3", True, (255, 255, 255)),
                       font.render("2", True, (255, 255, 255)),
-                      font.render("3", True, (255, 255, 255))]
+                      font.render("1", True, (255, 255, 255)),
+                      font.render("Go!", True, (255, 255, 255))]
     countdown_rect = countdown_text[0].get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
 
     for i in range(3, 0, -1):
@@ -356,7 +369,7 @@ def countdown_screen():
         pygame.display.update()
         time.sleep(1)
 
-    main() 
+    main()
 
 def help_screen():
     global SCREEN
