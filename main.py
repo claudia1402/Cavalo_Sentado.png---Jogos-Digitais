@@ -228,18 +228,27 @@ def add_powerup():
         new_powerup_y = 310
         if len(powerups) > 0:
             last_powerup = powerups[-1]
+            min_distance_between_powerups = max(min_distance_between_powerups, last_powerup.rect.width + 600)
             new_powerup_x = max(SCREEN_WIDTH, last_powerup.rect.x + min_distance_between_powerups)
-        if powerup_type == "power_supply":
-            powerups.append(PowerSupply(new_powerup_x, new_powerup_y))
-        elif powerup_type == "graphics_card":
-            powerups.append(GraphicsCard(new_powerup_x, new_powerup_y))
-            if powerup_type == "graphics_card":
+        # Check for overlap with obstacles
+        new_powerup_rect = pygame.Rect(new_powerup_x, new_powerup_y, POWER_SUPPLY.get_width(), POWER_SUPPLY.get_height())
+        overlapping = False
+        for obstacle in obstacles:
+            if obstacle.rect.colliderect(new_powerup_rect):
+                overlapping = True
+                break
+        
+        if not overlapping:  # Only add if no overlap with obstacles
+            if powerup_type == "power_supply":
+                powerups.append(PowerSupply(new_powerup_x, new_powerup_y))
+            elif powerup_type == "graphics_card":
                 powerups.append(GraphicsCard(new_powerup_x, new_powerup_y))
-                pink_border_active = True  # Activate pink border effect
-                pink_border_timer = pygame.time.get_ticks()  # Start the timer
-        elif powerup_type == "ssd":
-            powerups.append(SSD(new_powerup_x, new_powerup_y))
-            
+                if powerup_type == "graphics_card":
+                    powerups.append(GraphicsCard(new_powerup_x, new_powerup_y))
+                    pink_border_active = True  # Activate pink border effect
+                    pink_border_timer = pygame.time.get_ticks()  # Start the timer
+            elif powerup_type == "ssd":
+                powerups.append(SSD(new_powerup_x, new_powerup_y))
 powerups = []
 
 class Obstacle:
