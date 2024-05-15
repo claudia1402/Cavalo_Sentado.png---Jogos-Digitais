@@ -70,8 +70,6 @@ OBSTACLE_ONE_LARGE = [pygame.image.load(os.path.join("Assets/Cables", "LargeCabl
 OBSTACLE_TWO = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
                 pygame.image.load(os.path.join("Assets/Bird", "Bird2.png"))]
 
-CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
-
 BG = pygame.image.load(os.path.join("Assets/Other", "Track3.png"))
 
 POWER_SUPPLY = pygame.image.load(os.path.join("Assets/PC_Hardware", "PowerSupply2.png"))
@@ -234,22 +232,6 @@ def add_powerup():
             
 powerups = []
 
-class Cloud:
-    def __init__(self):
-        self.x = SCREEN_WIDTH + random.randint(800,1000)
-        self.y = random.randint(50,100)
-        self.image = CLOUD
-        self.width = self.image.get_width()
-
-    def update(self):
-        self.x -= game_speed
-        if self.x < -self.width:
-            self.x = SCREEN_WIDTH + random.randint(2500,3000)
-            self.y = random.randint(50,100)
-
-    def draw(self, SCREEN):
-        SCREEN.blit(self.image, (self.x, self.y))
-
 class Obstacle:
     def __init__(self,image,type):
         self.image = image
@@ -340,7 +322,6 @@ def main():
     boy = Boy()
     clock = pygame.time.Clock()
     player = Boy()
-    cloud = Cloud()
     game_speed = 14
     x_pos_bg = 0
     y_pos_bg = 380
@@ -425,9 +406,6 @@ def main():
         points_ui.draw(SCREEN)
 
         background()
-
-        cloud.draw(SCREEN)
-        cloud.update()
 
         score()
 
