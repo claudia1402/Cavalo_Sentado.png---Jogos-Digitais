@@ -326,8 +326,6 @@ def menu_screen():
     help_rect = help_text.get_rect(center=(SCREEN_WIDTH // 2, 300))
 
     while run_menu:
-        
-        
         # Scale and blit background image to cover the entire screen
         scaled_bg = pygame.transform.scale(NEW_BG, (SCREEN_WIDTH, SCREEN_HEIGHT))
         SCREEN.blit(scaled_bg, (0, 0))
@@ -348,9 +346,12 @@ def menu_screen():
                 pygame.quit()
                 quit()
                 run_menu = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
-                if play_rect.collidepoint(mouse_pos):
+                if help_rect.collidepoint(mouse_pos):
+                    run_menu = False
+                    help_screen()
+                elif play_rect.collidepoint(mouse_pos):
                     run_menu = False
                     countdown_screen()
 
