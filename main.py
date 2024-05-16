@@ -4,6 +4,17 @@ import random
 
 pygame.init()
 
+# Load sound files
+COLLISION_SOUND = pygame.mixer.Sound(os.path.join("Assets/Sounds", "collision.mp3"))
+POWER_SUPPLY_SOUND = pygame.mixer.Sound(os.path.join("Assets/Sounds", "boost.mp3"))
+GRAPHICS_CARD_SOUND = pygame.mixer.Sound(os.path.join("Assets/Sounds", "boost.mp3"))
+SSD_SOUND = pygame.mixer.Sound(os.path.join("Assets/Sounds", "boost.mp3"))
+
+# Load background music
+pygame.mixer.music.load(os.path.join("Assets/Sounds", "background_music.mp3"))
+pygame.mixer.music.set_volume(0.3)  # Set the volume (optional)
+pygame.mixer.music.play(-1)  # Play the music in a loop
+
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
 
@@ -174,6 +185,7 @@ class PowerSupply:
 
     def effect(self, player):
         global points
+        pygame.mixer.Sound.play(POWER_SUPPLY_SOUND)  # Play sound effect
         player.energy += 20
         if player.energy > 100:  # Limit energy to 100
             player.energy = 100
@@ -189,6 +201,7 @@ class GraphicsCard:
 
     def effect(self, player):
         global pink_border_active, pink_border_timer, points
+        pygame.mixer.Sound.play(GRAPHICS_CARD_SOUND)  # Play sound effect
         player.visibility_boost = True
         pink_border_active = True  # Activate pink border effect
         pink_border_timer = pygame.time.get_ticks()  # Start the timer
@@ -205,6 +218,7 @@ class SSD(pygame.sprite.Sprite):
 
     def effect(self, player):
         global game_speed, points  # Access the global game_speed variable
+        pygame.mixer.Sound.play(SSD_SOUND)  # Play sound effect
         player.speed_boost = True
         game_speed += 0.5
         points += 50
@@ -317,6 +331,8 @@ points_ui = PointsUI()
 
 #main
 def main():
+    pygame.mixer.music.unpause()
+    pygame.mixer.Sound.stop(COLLISION_SOUND)
     global game_speed, x_pos_bg, y_pos_bg, points, obstacles, pink_border_active, pink_border_timer
     run = True
     boy = Boy()
@@ -330,6 +346,7 @@ def main():
     obstacles = []
     death_count = 0
     
+    
     def check_energy():
         if player.energy <= 0:
             return True
@@ -341,7 +358,7 @@ def main():
         if points % 100 == 0:
             game_speed += 0.2
 
-        text = font.render("Pontos: " + str(points), True, (0,0,0))
+        text = font.render("Pontos: " + str(points), True, (255,255,255))
         textRect = text.get_rect()
         textRect.center = (1000, 40)
         SCREEN.blit(text, textRect)
@@ -387,6 +404,8 @@ def main():
             if player.dino_rect.colliderect(obstacle.rect):
                 pygame.time.delay(1500)
                 death_count += 1
+                pygame.mixer.music.pause()
+                pygame.mixer.Sound.play(COLLISION_SOUND)  # Play sound effect
                 gameOver(death_count, points)  # Pass points to the gameOver
 
         for item in powerups:
