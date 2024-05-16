@@ -309,23 +309,32 @@ def draw_new_background(screen):
 
 def gameOver(death_count, points):
     run = True
+    font = pygame.font.Font("freesansbold.ttf", 30)
+    menu_text = font.render("Menu", True, (0, 0, 0))
+    restart_text = font.render("Restart", True, (0, 0, 0))
+    menu_rect = menu_text.get_rect(center=(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 100))
+    restart_rect = restart_text.get_rect(center=(SCREEN_WIDTH // 2 + 150, SCREEN_HEIGHT // 2 + 100))
+
     while run:
-        SCREEN.fill((255,255,255))
-        font = pygame.font.Font("freesansbold.ttf", 30)
+        SCREEN.fill((0, 0, 0))
 
         if death_count == 0:
-            text = font.render("Pressione qualquer tecla para começar!", True, (0,0,0))
-
+            text = font.render("GAME OVER!", True, (255, 255, 255))
         elif death_count > 0:
-            text = font.render("Pressione qualquer tecla para recomeçar!", True, (0,0,0))
-            score = font.render("Pontuação: " + str(points), True, (0,0,0))  # Display score points
-            scoreRect = score.get_rect()
-            scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
-            SCREEN.blit(score, scoreRect)
-        textRect = text.get_rect()
-        textRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-        SCREEN.blit(text, textRect)
+            text = font.render("GAME OVER!", True, (255, 255, 255))
+            score = font.render("Sua Pontuação: " + str(points), True, (255, 255, 255))
+            score_rect = score.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50))
+            SCREEN.blit(score, score_rect)
+
+        text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        SCREEN.blit(text, text_rect)
         SCREEN.blit(RUNNING[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 140))
+
+        pygame.draw.rect(SCREEN, (200, 200, 200), menu_rect)
+        pygame.draw.rect(SCREEN, (200, 200, 200), restart_rect)
+        SCREEN.blit(menu_text, menu_rect)
+        SCREEN.blit(restart_text, restart_rect)
+
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -333,8 +342,15 @@ def gameOver(death_count, points):
                 pygame.quit()
                 quit()  # Exit the game
                 run = False  # Ensure the loop exits
-            if event.type == pygame.KEYDOWN:
-                main()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if menu_rect.collidepoint(mouse_pos):
+                    menu_screen()  # Return to the menu screen if the "Menu" button is clicked
+                    run = False
+                elif restart_rect.collidepoint(mouse_pos):
+                    main()  # Restart the game if the "Restart" button is clicked
+                    run = False
+
 
 points_ui = PointsUI()
 
