@@ -405,18 +405,28 @@ def help_screen_2():
     run_help_2 = True
     font_title = pygame.font.Font("freesansbold.ttf", 40)
     font_subtitle = pygame.font.Font("freesansbold.ttf", 30)
-    font_description = pygame.font.Font("freesansbold.ttf", 20)
-    graphic_card_image = GRAPHICS_CARD  # Assuming GRAPHICS_CARD is the image for the graphic card
+    font_description = pygame.font.Font("freesansbold.ttf", 10)
+    cable_card_image = OBSTACLE_ONE_SMALL 
+    cable_card_image2 = OBSTACLE_ONE_SMALL 
+    cable_card_image3 = OBSTACLE_ONE_SMALL
+    enemy_card_image = OBSTACLE_TWO
 
-    title_text = font_title.render("Help Screen 2", True, (255, 255, 255))
+    title_text = font_title.render("Como Funciona - EVITE", True, (255, 255, 255))
     title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 50))
 
-    back_text = font_subtitle.render("Back", True, (255, 255, 255))
+    back_text = font_subtitle.render("voltar", True, (255, 255, 255))
     back_rect = back_text.get_rect(topleft=(20, 20))
 
-    # Add any additional content for the second help screen here
+    cable1_card_image_rect = cable_card_image[0].get_rect(center=(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2))  # Positioned at center-left
+    description_cables = font_description.render("Pule os cabos com mau contato com a Seta para cima!", True, (255, 255, 255))
+    description_cables_rect = description_cables.get_rect(center=(SCREEN_WIDTH // 5, SCREEN_HEIGHT // 2 + 70))
+    
+    
+    enemy_card_image_rect = enemy_card_image[0].get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 50))  # Positioned at center-left
+    description_enemy = font_description.render("Agache com a Seta para baixo para escapar do Super Malware!", True, (255, 255, 255))
+    description_enemy_rect = description_enemy.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 70))
 
-    graphic_card_rect = graphic_card_image.get_rect(center=(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2))  # Positioned at center-left
+
 
     while run_help_2:
         SCREEN.fill((0, 0, 0))
@@ -425,7 +435,11 @@ def help_screen_2():
         SCREEN.blit(back_text, back_rect)
         # Add any additional content rendering here
 
-        SCREEN.blit(graphic_card_image, graphic_card_rect)
+        SCREEN.blit(cable_card_image[0], cable1_card_image_rect)
+        SCREEN.blit(description_cables, description_cables_rect)
+        
+        SCREEN.blit(enemy_card_image[0], enemy_card_image_rect)
+        SCREEN.blit(description_enemy, description_enemy_rect)
 
         pygame.display.update()
 
