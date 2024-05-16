@@ -405,31 +405,65 @@ def help_screen():
     run_help = True
     font_title = pygame.font.Font("freesansbold.ttf", 40)
     font_subtitle = pygame.font.Font("freesansbold.ttf", 30)
-    font_description = pygame.font.Font("freesansbold.ttf", 20)
-    
-    title_text = font_title.render("How It Works", True, (255, 255, 255))
-    subtitle_text = font_subtitle.render("COLLECT", True, (255, 255, 255))
-    description_text = font_description.render("Collect Hardware pieces to acquire points and understand what benefits/functions they can have:", True, (255, 255, 255))
-    video_card_text = font_description.render("VIDEO CARD", True, (255, 255, 255))
-    video_card_description = font_description.render("This item is responsible for viewing the graphics on the PC. \n POWER: VIEW COLLECTABLES EASIER. +50 POINTS.", True, (255, 255, 255))
+    font_description = pygame.font.Font("freesansbold.ttf", 10)
+    graphic_card_image = GRAPHICS_CARD  # Assuming GRAPHICS_CARD is the image for the graphic card
+    SSD_card_image = SSD_IMAGE
+    PowerSupply_card_image = POWER_SUPPLY
 
-    title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 100))
-    subtitle_rect = subtitle_text.get_rect(center=(SCREEN_WIDTH // 2, 200))
-    description_rect = description_text.get_rect(center=(SCREEN_WIDTH // 2, 250))
-    video_card_text_rect = video_card_text.get_rect(left=50, top=310)
-    video_card_description_rect = video_card_description.get_rect(left=50, top=340)
+    title_text = font_title.render("Como Funciona - Colete", True, (255, 255, 255))
+    title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 50))
+
+    back_text = font_subtitle.render("Voltar", True, (255, 255, 255))
+    back_rect = back_text.get_rect(topleft=(20, 20))
+
+    next_text = font_subtitle.render("Próximo", True, (255, 255, 255))
+    next_rect = next_text.get_rect(topright=(SCREEN_WIDTH - 20, 20))
+    
+    
+    #GraphicCard
+    description_GraphicCard = font_description.render("Colete a placa de video para visualizar os coletáveis melhor por 5 segundos", True, (255, 255, 255))
+    description_GraphicCard_rect = description_GraphicCard.get_rect(center=(SCREEN_WIDTH // 5, SCREEN_HEIGHT // 2 + 70))
+
+    description_GraphicCard2 = font_description.render("+50 PONTOS", True, (255, 255, 255))
+    additional_rect = description_GraphicCard2.get_rect(center=(SCREEN_WIDTH // 6, SCREEN_HEIGHT // 2 + 150))
+
+    graphic_card_rect = graphic_card_image.get_rect(center=(SCREEN_WIDTH // 6, SCREEN_HEIGHT // 2 - 50))
+    
+    #SSD
+    description_SSD = font_description.render("Colete o SSD para aumentar a velocidade do jogo", True, (255, 255, 255))
+    description_SSD_rect = description_SSD.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 70))
+
+    description_SSD2 = font_description.render("+50 PONTOS", True, (255, 255, 255))
+    additional_SSD_rect = description_SSD2.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 150))
+
+    SSD_card_image_rect = SSD_card_image.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 50))
+    
+    #PowerSupply
+    description_PowerSuplly = font_description.render("Colete fontes para recuperar vida", True, (255, 255, 255))
+    description_PowerSuplly_rect = description_PowerSuplly.get_rect(center=(SCREEN_WIDTH // 1.2, SCREEN_HEIGHT // 2 + 70))
+
+    description_PowerSuplly2 = font_description.render("+50 PONTOS", True, (255, 255, 255))
+    description_PowerSuplly2_rect = description_PowerSuplly2.get_rect(center=(SCREEN_WIDTH // 1.2, SCREEN_HEIGHT // 2 + 150))
+
+    PowerSupply_card_image_rect = PowerSupply_card_image.get_rect(center=(SCREEN_WIDTH // 1.2, SCREEN_HEIGHT // 2 - 50))
 
     while run_help:
         SCREEN.fill((0, 0, 0))
 
-        # Draw title, subtitle, and description
         SCREEN.blit(title_text, title_rect)
-        SCREEN.blit(subtitle_text, subtitle_rect)
-        SCREEN.blit(description_text, description_rect)
-
-        # Draw text for video card
-        SCREEN.blit(video_card_text, video_card_text_rect)
-        SCREEN.blit(video_card_description, video_card_description_rect)
+        SCREEN.blit(back_text, back_rect)
+        SCREEN.blit(next_text, next_rect)
+        SCREEN.blit(description_GraphicCard, description_GraphicCard_rect)
+        SCREEN.blit(description_GraphicCard2, additional_rect)
+        SCREEN.blit(graphic_card_image, graphic_card_rect)
+        
+        SCREEN.blit(description_SSD, description_SSD_rect)
+        SCREEN.blit(description_SSD2, additional_SSD_rect)
+        SCREEN.blit(SSD_card_image, SSD_card_image_rect)
+        
+        SCREEN.blit(description_PowerSuplly, description_PowerSuplly_rect)
+        SCREEN.blit(description_PowerSuplly2, description_PowerSuplly2_rect)
+        SCREEN.blit(PowerSupply_card_image, PowerSupply_card_image_rect)
 
         pygame.display.update()
 
@@ -440,10 +474,11 @@ def help_screen():
                 run_help = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
-                # Check if the back button is clicked
                 if back_rect.collidepoint(mouse_pos):
                     run_help = False
-                    menu_screen()
+                    menu_screen()  # Return to the home screen if the "Back" button is clicked
+                # Add functionality for the "Next" button if needed
+
 
 
 
