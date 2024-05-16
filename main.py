@@ -400,6 +400,49 @@ def countdown_screen():
 
     main()
     
+def help_screen_2():
+    global SCREEN
+    run_help_2 = True
+    font_title = pygame.font.Font("freesansbold.ttf", 40)
+    font_subtitle = pygame.font.Font("freesansbold.ttf", 30)
+    font_description = pygame.font.Font("freesansbold.ttf", 20)
+    graphic_card_image = GRAPHICS_CARD  # Assuming GRAPHICS_CARD is the image for the graphic card
+
+    title_text = font_title.render("Help Screen 2", True, (255, 255, 255))
+    title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 50))
+
+    back_text = font_subtitle.render("Back", True, (255, 255, 255))
+    back_rect = back_text.get_rect(topleft=(20, 20))
+
+    # Add any additional content for the second help screen here
+
+    graphic_card_rect = graphic_card_image.get_rect(center=(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2))  # Positioned at center-left
+
+    while run_help_2:
+        SCREEN.fill((0, 0, 0))
+
+        SCREEN.blit(title_text, title_rect)
+        SCREEN.blit(back_text, back_rect)
+        # Add any additional content rendering here
+
+        SCREEN.blit(graphic_card_image, graphic_card_rect)
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+                run_help_2 = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if back_rect.collidepoint(mouse_pos):
+                    run_help_2 = False
+                    help_screen()  # Return to the previous help screen if the "Back" button is clicked
+
+
+                
+    
 def help_screen():
     global SCREEN
     run_help = True
@@ -478,7 +521,9 @@ def help_screen():
                     run_help = False
                     menu_screen()  # Return to the home screen if the "Back" button is clicked
                 # Add functionality for the "Next" button if needed
-
+                elif next_rect.collidepoint(mouse_pos):
+                    run_help = False
+                    help_screen_2()
 
 
 
