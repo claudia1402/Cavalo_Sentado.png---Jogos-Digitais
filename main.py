@@ -100,9 +100,6 @@ class Boy:
         current_time = pygame.time.get_ticks()
         time_elapsed = (current_time - self.last_energy_update_time) / 1000  # Convert milliseconds to seconds
         
-         # Debug print
-        print("Current Energy:", self.energy)
-        
         # Decrease energy over time
         self.energy -= ENERGY_DECREASE_RATE / 60
         if self.energy < 0:
@@ -186,9 +183,6 @@ class PowerSupply:
             player.energy = 100
         points += 50
         points_ui.show()
-        
-        # Debug print
-        print("Player Energy after collecting Power Supply:", player.energy)
 
 class GraphicsCard:
     def __init__(self, x, y):
@@ -399,6 +393,8 @@ def countdown_screen():
         time.sleep(1)
 
     main()
+  
+
     
 def help_screen_2():
     global SCREEN
@@ -413,6 +409,8 @@ def help_screen_2():
 
     title_text = font_title.render("Como Funciona - EVITE", True, (255, 255, 255))
     title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 50))
+    
+
 
     back_text = font_subtitle.render("voltar", True, (255, 255, 255))
     back_rect = back_text.get_rect(topleft=(20, 20))
@@ -476,6 +474,9 @@ def help_screen():
     next_text = font_subtitle.render("Próximo", True, (255, 255, 255))
     next_rect = next_text.get_rect(topright=(SCREEN_WIDTH - 20, 20))
     
+    title_subtext = font_subtitle.render("Ganhe pontos conforme o tempo passa!", True, (255, 255, 255))
+    title_subtext_rect = title_subtext.get_rect(center=(SCREEN_WIDTH // 2, 150))
+    
     
     #GraphicCard
     description_GraphicCard = font_description.render("Colete a placa de video para visualizar os coletáveis melhor por 5 segundos", True, (255, 255, 255))
@@ -510,10 +511,10 @@ def help_screen():
         SCREEN.blit(title_text, title_rect)
         SCREEN.blit(back_text, back_rect)
         SCREEN.blit(next_text, next_rect)
+        SCREEN.blit(title_subtext, title_subtext_rect)
         SCREEN.blit(description_GraphicCard, description_GraphicCard_rect)
         SCREEN.blit(description_GraphicCard2, additional_rect)
         SCREEN.blit(graphic_card_image, graphic_card_rect)
-        
         SCREEN.blit(description_SSD, description_SSD_rect)
         SCREEN.blit(description_SSD2, additional_SSD_rect)
         SCREEN.blit(SSD_card_image, SSD_card_image_rect)
