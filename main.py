@@ -686,8 +686,40 @@ def main():
         clock.tick(60)
 
 def save_score(player_name, score):
-    with open("scores.txt", "a") as file:
-        file.write(player_name + " " + str(score) + "\n")
+    # Define the path to the scores file
+    SCORES_FILE_PATH = "scores.txt"
+
+    # Check if the scores file exists
+    if not os.path.isfile(SCORES_FILE_PATH):
+        with open(SCORES_FILE_PATH, 'w') as file:
+            file.write(player_name + ":" + str(score) + "\n")
+        return
+
+    # Check if the player already exists in the scores file
+    with open(SCORES_FILE_PATH, 'r+') as file:
+        lines = file.readlines()
+
+        player_exists = False
+        for i, line in enumerate(lines):
+            name, existing_score = line.strip().split(':')
+            if name == player_name:
+                player_exists = True
+                # Check if the new score is higher than the existing score
+                if int(score) > int(existing_score):
+                    # Update the score
+                    lines[i] = player_name + ":" + str(score) + "\n"
+                break
+
+        # If the player doesn't exist, append the new player and score
+        if not player_exists:
+            file.write(player_name + ":" + str(score) + "\n")
+            return
+
+        # If the player exists and the score is updated, write the updated scores to the file
+        file.seek(0)
+        file.truncate()
+        file.writelines(lines)
+        
 
 def load_scores():
     scores = []
