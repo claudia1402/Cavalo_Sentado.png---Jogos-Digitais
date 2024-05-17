@@ -4,7 +4,6 @@ import random
 import time
 import pygame.freetype
 
-
 pygame.init()
 
 SCREEN_HEIGHT = 600
@@ -365,6 +364,11 @@ points_ui = PointsUI()
 def menu_screen():
     global SCREEN, NEW_BG
     run_menu = True
+    
+    pygame.mixer.init()  # Initialize the mixer
+    pygame.mixer.music.load("SoundsFile/background_music.mp3")  # Load the background music file
+    pygame.mixer.music.play(-1)
+    
     font = pygame.font.Font("freesansbold.ttf", 40)
     play_text = font.render("Jogar", True, (255, 255, 255))
     play_rect = play_text.get_rect(center=(SCREEN_WIDTH // 2, 350))
