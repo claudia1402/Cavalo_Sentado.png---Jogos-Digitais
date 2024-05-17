@@ -2,6 +2,8 @@ import pygame
 import os
 import random
 import time
+import pygame.freetype
+
 
 pygame.init()
 
@@ -307,7 +309,10 @@ def draw_new_background(screen):
     overlay.fill((0, 0, 0, 180))  # Fill the surface with black color and set transparency to 100 (semi-transparent)
     screen.blit(overlay, (0, 0))  # Draw the overlay on top of the background
 
+
 def gameOver(death_count, points):
+    global score_saved
+    score_saved = False
     run = True
     font = pygame.font.Font("freesansbold.ttf", 30)
     menu_text = font.render("Menu", True, (0, 0, 0))
@@ -350,6 +355,9 @@ def gameOver(death_count, points):
                 elif restart_rect.collidepoint(mouse_pos):
                     main()  # Restart the game if the "Restart" button is clicked
                     run = False
+        if not score_saved:  # Check if the score has not been saved already
+            save_score(player_name, points)  # Save the player's name and score
+            score_saved = True  # Set the flag to indicate that the score has been saved
 
 
 points_ui = PointsUI()
@@ -362,6 +370,10 @@ def menu_screen():
     play_rect = play_text.get_rect(center=(SCREEN_WIDTH // 2, 200))
     help_text = font.render("Como Funciona", True, (255, 255, 255))
     help_rect = help_text.get_rect(center=(SCREEN_WIDTH // 2, 300))
+    
+    name_input_rect = pygame.Rect(400, 200, 300, 40)
+    global player_name
+    player_name = ""
 
     while run_menu:
         # Scale and blit background image to cover the entire screen
@@ -372,6 +384,11 @@ def menu_screen():
         overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 128))  # 128 for semi-transparency
         SCREEN.blit(overlay, (0, 0))
+        
+        #input text
+        pygame.draw.rect(SCREEN, (255, 255, 255), name_input_rect, 2)
+        font = pygame.freetype.SysFont(None, 32)
+        font.render_to(SCREEN, (name_input_rect.x + 5, name_input_rect.y + 5), player_name, (255, 255, 255))
         
         # Blit menu text
         SCREEN.blit(play_text, play_rect)
@@ -386,12 +403,16 @@ def menu_screen():
                 run_menu = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
-                if help_rect.collidepoint(mouse_pos):
-                    run_menu = False
-                    help_screen()
-                elif play_rect.collidepoint(mouse_pos):
-                    run_menu = False
-                    countdown_screen()
+                if play_rect.collidepoint(mouse_pos):
+                    if player_name.strip():  # Check if player name is not empty or only contains spaces
+                        run_menu = False
+                        countdown_screen()  # Start the game
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    player_name = player_name[:-1]  # Remove last character
+                else:
+                    player_name += event.unicode  # Add typed character to player name
+
 
 def countdown_screen():
     global SCREEN
@@ -655,6 +676,7 @@ def main():
         if check_energy():
             gameOver(death_count, points)  # Pass points to the gameOver
             run = False  # End the game and return to gameOver
+            save_score(player_name, points)
             
         current_time = pygame.time.get_ticks()
         if pink_border_active and current_time - pink_border_timer > 10000:  # Check if 10 seconds have passed
@@ -662,5 +684,29 @@ def main():
         
         pygame.display.update()
         clock.tick(60)
+
+def save_score(player_name, score):
+    with open("scores.txt", "a") as file:
+        file.write(player_name + " " + str(score) + "\n")
+
+def load_scores():
+    scores = []
+    with open("scores.txt", "r") as file:
+        for line in file:
+            player_name, player_score = line.strip().split()
+            scores.append((player_name, int(player_score)))
+    return scores
+
+def update_high_score(player_name, score):
+    scores = load_scores()
+    highest_score = max(scores, key=lambda x: x[1])[1] if scores else 0
+    if score > highest_score:
+        with open("scores.txt", "w") as file:
+            file.write(player_name + " " + str(score) + "\n")
+
+# Example usage:
+# save_score("Player1", 100)
+# update_high_score("Player1
+
 
 menu_screen()
