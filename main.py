@@ -166,7 +166,7 @@ class Boy:
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.boy_rect.x, self.boy_rect.y))
-        # Draw energy bar
+
         pygame.draw.rect(SCREEN, ENERGY_BAR_COLOR, (10, 10, self.energy * 2, ENERGY_BAR_HEIGHT))
         pygame.draw.rect(SCREEN, (0, 0, 0), (10, 10, ENERGY_BAR_WIDTH, ENERGY_BAR_HEIGHT), 2)
 
@@ -209,15 +209,15 @@ class SSD(pygame.sprite.Sprite):
         self.rect.y = y
 
     def effect(self, player):
-        global game_speed, points  # Access the global game_speed variable
+        global game_speed, points 
         player.speed_boost = True
         game_speed += 0.5
         points += 50
         points_ui.show()
         
 def add_powerup():
-    min_distance_between_powerups = 400  # Aumentando a distância mínima entre coletáveis
-    if random.randint(0, 100) < 2:  # Reduzindo a probabilidade de criação de coletáveis
+    min_distance_between_powerups = 400  
+    if random.randint(0, 100) < 2:
         powerup_type = random.choice(["power_supply", "graphics_card", "ssd"])
         new_powerup_x = SCREEN_WIDTH
         new_powerup_y = 310
@@ -742,10 +742,5 @@ def update_high_score(player_name, score):
     if score > highest_score:
         with open("scores.txt", "w") as file:
             file.write(player_name + " " + str(score) + "\n")
-
-# Example usage:
-# save_score("Player1", 100)
-# update_high_score("Player1
-
 
 menu_screen()
