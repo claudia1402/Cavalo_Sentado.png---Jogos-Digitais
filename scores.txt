@@ -1,1 +1,2 @@
 nome_jogador: 00
+aaaa:1920
