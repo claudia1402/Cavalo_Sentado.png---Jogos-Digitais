@@ -367,9 +367,9 @@ def menu_screen():
     run_menu = True
     font = pygame.font.Font("freesansbold.ttf", 40)
     play_text = font.render("Jogar", True, (255, 255, 255))
-    play_rect = play_text.get_rect(center=(SCREEN_WIDTH // 2, 200))
+    play_rect = play_text.get_rect(center=(SCREEN_WIDTH // 2, 350))
     help_text = font.render("Como Funciona", True, (255, 255, 255))
-    help_rect = help_text.get_rect(center=(SCREEN_WIDTH // 2, 300))
+    help_rect = help_text.get_rect(center=(SCREEN_WIDTH // 2, 450))
     
     name_input_rect = pygame.Rect(400, 200, 300, 40)
     global player_name
@@ -407,6 +407,9 @@ def menu_screen():
                     if player_name.strip():  # Check if player name is not empty or only contains spaces
                         run_menu = False
                         countdown_screen()  # Start the game
+                elif help_rect.collidepoint(mouse_pos):
+                    run_menu = False
+                    help_screen()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
                     player_name = player_name[:-1]  # Remove last character

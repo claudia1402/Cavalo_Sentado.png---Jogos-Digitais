@@ -1,2 +1,1 @@
-iinha:1597
-cleide:805
+nome_jogador: 00
